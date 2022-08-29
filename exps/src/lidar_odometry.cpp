@@ -21,67 +21,6 @@ using namespace vtr::logging;
 using namespace vtr::tactic;
 using namespace vtr::exps;
 
-float getFloatFromByteArray(char *byteArray, uint index) { return *((float *)(byteArray + index)); }
-
-int64_t getStampFromPath(const std::string &path) {
-  std::vector<std::string> parts;
-  boost::split(parts, path, boost::is_any_of("/"));
-  std::string stem = parts[parts.size() - 1];
-  boost::split(parts, stem, boost::is_any_of("."));
-  int64_t time1 = std::stoll(parts[0]);
-  return time1 * 1000;
-}
-
-std::pair<int64_t, Eigen::MatrixXd> load_lidar(const std::string &path) {
-  std::ifstream ifs(path, std::ios::binary);
-  std::vector<char> buffer(std::istreambuf_iterator<char>(ifs), {});
-  uint float_offset = 4;
-  uint fields = 6;  // x, y, z, i, r, t
-  uint point_step = float_offset * fields;
-  uint N = floor(buffer.size() / point_step);
-  Eigen::MatrixXd pc(Eigen::MatrixXd::Ones(N, fields));
-  for (uint i = 0; i < N; ++i) {
-    uint bufpos = i * point_step;
-    for (uint j = 0; j < fields; ++j) {
-      pc(i, j) = getFloatFromByteArray(buffer.data(), bufpos + j * float_offset);
-    }
-  }
-  // Add offset to timestamps
-  const auto timestamp = getStampFromPath(path);
-  double t = double(timestamp / 1000) * 1.0e-6;
-  pc.block(0, 5, N, 1).array() += t;
-
-  return std::make_pair(timestamp, std::move(pc));
-}
-
-EdgeTransform load_T_robot_lidar(const fs::path &path) {
-#if false
-  std::ifstream ifs(path / "calib" / "T_applanix_lidar.txt", std::ios::in);
-
-  Eigen::Matrix4d T_applanix_lidar_mat;
-  for (size_t row = 0; row < 4; row++)
-    for (size_t col = 0; col < 4; col++) ifs >> T_applanix_lidar_mat(row, col);
-
-  Eigen::Matrix4d yfwd2xfwd;
-  yfwd2xfwd << 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
-
-  EdgeTransform T_robot_lidar(Eigen::Matrix4d(yfwd2xfwd * T_applanix_lidar_mat),
-                              Eigen::Matrix<double, 6, 6>::Zero());
-#else
-  Eigen::Matrix4d T_robot_lidar_mat;
-  // clang-format off
-  /// results from HERO paper
-  T_robot_lidar_mat <<  0.68297386,  0.73044281,  0.        ,  0.26      ,
-                       -0.73044281,  0.68297386,  0.        ,  0.        ,
-                        0.        ,  0.        ,  1.        , -0.21      ,
-                        0.        ,  0.        ,  0.        ,  1.        ;
-  // clang-format on
-  EdgeTransform T_robot_lidar(T_robot_lidar_mat, Eigen::Matrix<double, 6, 6>::Zero());
-#endif
-
-  return T_robot_lidar;
-}
-
 int main(int argc, char **argv) {
   // disable eigen multi-threading
   Eigen::setNbThreads(1);

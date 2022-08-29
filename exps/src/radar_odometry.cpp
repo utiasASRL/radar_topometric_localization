@@ -21,42 +21,6 @@ using namespace vtr::logging;
 using namespace vtr::tactic;
 using namespace vtr::exps;
 
-int64_t getStampFromPath(const std::string &path) {
-  std::vector<std::string> parts;
-  boost::split(parts, path, boost::is_any_of("/"));
-  std::string stem = parts[parts.size() - 1];
-  boost::split(parts, stem, boost::is_any_of("."));
-  int64_t time1 = std::stoll(parts[0]);
-  return time1 * 1000;
-}
-
-EdgeTransform load_T_robot_radar(const fs::path &path) {
-#if true
-  std::ifstream ifs1(path / "calib" / "T_applanix_lidar.txt", std::ios::in);
-  std::ifstream ifs2(path / "calib" / "T_radar_lidar.txt", std::ios::in);
-
-  Eigen::Matrix4d T_applanix_lidar_mat;
-  for (size_t row = 0; row < 4; row++)
-    for (size_t col = 0; col < 4; col++) ifs1 >> T_applanix_lidar_mat(row, col);
-
-  Eigen::Matrix4d T_radar_lidar_mat;
-  for (size_t row = 0; row < 4; row++)
-    for (size_t col = 0; col < 4; col++) ifs2 >> T_radar_lidar_mat(row, col);
-
-  Eigen::Matrix4d yfwd2xfwd;
-  yfwd2xfwd << 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
-
-  EdgeTransform T_robot_radar(Eigen::Matrix4d(yfwd2xfwd * T_applanix_lidar_mat * T_radar_lidar_mat.inverse()),
-                              Eigen::Matrix<double, 6, 6>::Zero());
-#else
-  (void)path;
-  // robot frame == radar frame
-  EdgeTransform T_robot_radar(Eigen::Matrix4d(Eigen::Matrix4d::Identity()), Eigen::Matrix<double, 6, 6>::Zero());
-#endif
-
-  return T_robot_radar;
-}
-
 int main(int argc, char **argv) {
   // disable eigen multi-threading
   Eigen::setNbThreads(1);
