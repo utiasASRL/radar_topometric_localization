@@ -5,14 +5,14 @@ GENERATOR="Unix Makefiles"
 
 SRC_DIR=$(pwd)
 EXT_SRC_DIR="${SRC_DIR}/external"
-VTR3_SRC_DIR="${SRC_DIR}/vtr3/main"
-EXPS_SRC_DIR="${SRC_DIR}/exps"
+export VTRSRC="${SRC_DIR}/vtr3"
+export EXPSSRC="${SRC_DIR}/exps"
 
-BUILD_DIR="${SRC_DIR}/cmake-build-${BUILD_TYPE}"
-EXT_BUILD_DIR=$BUILD_DIR/external
+# BUILD_DIR="${SRC_DIR}/cmake-build-${BUILD_TYPE}"
+# EXT_BUILD_DIR=$BUILD_DIR/external
 
-mkdir -p $BUILD_DIR
-mkdir -p $EXT_BUILD_DIR
+# mkdir -p $BUILD_DIR
+# mkdir -p $EXT_BUILD_DIR
 
 check_status_code() {
 	if [ $1 -ne 0 ]; then
@@ -31,9 +31,18 @@ check_status_code() {
 # check_status_code $?
 
 echo "[VTR3] -- [VTR3] -- building vtr3 packages"
-cd ${VTR3_SRC_DIR}
+cd ${VTRSRC}/main
 source /opt/ros/galactic/setup.bash
 colcon build --symlink-install \
 	--packages-up-to vtr_lidar vtr_radar vtr_radar_lidar \
 	--cmake-args \
 	-DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+check_status_code $?
+
+echo "[EXPS] -- [EXPS] -- building exps package"
+cd ${EXPSSRC}
+source ${VTRSRC}/main/install/setup.bash
+colcon build --symlink-install \
+	--cmake-args \
+	-DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+check_status_code $?
