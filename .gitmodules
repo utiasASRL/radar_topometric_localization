@@ -1,0 +1,4 @@
+[submodule "vtr3"]
+	path = vtr3
+	url = git@github.com:utiasASRL/vtr3.git
+	branch = radar
