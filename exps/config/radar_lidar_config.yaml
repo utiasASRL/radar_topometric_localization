@@ -56,7 +56,6 @@
 
       odometry: [
           # odometry and mapping thread modules
-          # "mcransac",
           "icp",
           "mapping",
           "vertex_test",
@@ -116,10 +115,10 @@
       filtering:
         type: radar.preprocessing
 
-        num_threads: 1 # number of threads for nearest neighbor search
+        num_threads: 8
 
         voxel_downsample: false
-        frame_voxel_size: 1.0 # grid size for frame voxelization in meters
+        frame_voxel_size: 1.0
 
         window_size: 3.0 # number of neighboring azimuths used to compute line normal
         aximuth_res: 0.015707963267948967 # azimuth resolution in radians (0.1 in degree), giveng M=400
@@ -131,24 +130,6 @@
         visualize: true
 
     odometry:
-      mcransac:
-        type: radar.mcransac
-        tolerance: 0.1225 # matched with squared error less than this are inliers
-        inlier_ratio: 0.9 # ratio of inliers required for MC-RANSAC to break early
-        iterations: 100 # Max number of RANSAC iterations
-        max_gn_iterations: 10 # Max number of Gauss-Newton NLLS iterations
-        epsilon_converge: 0.0001 # is norm(delta_w) < this, break out of Gauss-Newton
-        descriptor: orb
-        # ORB
-        patch_size: 31 # patch size for ORB descriptor calculations
-        nndr: 1.0 # Nearest Neighbor Distance Ratio test after ORB matching
-        # BASD
-        nbins: 16
-        bin_size: 1
-        visualize: true
-        filter_pc: false
-        init_icp: false
-
       icp:
         type: radar.odometry_icp
 
@@ -157,19 +138,19 @@
         traj_num_extra_states: 0
         traj_lock_prev_pose: true
         traj_lock_prev_vel: false
-        traj_qc_inv: [1.0, 0.0001, 0.0001, 0.0001, 0.0001, 0.01]
+        traj_qc_diag: [1.0, 0.0001, 0.0001, 0.0001, 0.0001, 0.01]
 
         # ICP parameters
-        num_threads: 1
-        first_num_steps: 2 # number of steps to with a greater matching distance threshold
-        initial_max_iter: 4 # phase 1 max iterations
-        initial_max_pairing_dist: 5.0 # phase 1 max pairing distance in meters
-        initial_max_planar_dist: 5.0 # phase 1 max planar distance in meters
-        refined_max_iter: 1000 # phase 2 max iterations
-        refined_max_pairing_dist: 5.0 # phase 2 max pairing distance in meters
-        refined_max_planar_dist: 5.0 # phase 2 max planar distance in meters
-        averaging_num_steps: 5 # averaging pose change over this number of steps until change is below a threshold at convergence
-        huber_delta: 1.0 # huber loss threshold for ICP
+        num_threads: 8
+        first_num_steps: 2
+        initial_max_iter: 4
+        initial_max_pairing_dist: 5.0
+        initial_max_planar_dist: 5.0
+        refined_max_iter: 1000
+        refined_max_pairing_dist: 5.0
+        refined_max_planar_dist: 5.0
+        averaging_num_steps: 5
+        huber_delta: 1.0
 
         # steam parameters
         verbose: false
@@ -183,20 +164,20 @@
       mapping:
         type: radar.odometry_map_maintenance
 
-        map_voxel_size: 1.0 # voxel size of the map in meters
+        map_voxel_size: 1.0
 
-        crop_range_front: 80.0 # odometry map crop range centered at vehicle in meters (radius of the odometry map)
-        back_over_front_ratio: 1.0 # ratio of the back crop range to the front crop range (not important)
+        crop_range_front: 80.0
+        back_over_front_ratio: 1.0
 
-        point_life_time: 3.0 # point life time based on number of map updates
+        point_life_time: 3.0
 
         visualize: true
 
       vertex_test:
         type: radar.vertex_test
 
-        max_translation: 10.0 # translation threshold in meters
-        max_rotation: 30.0 # rotation threshold in degrees
+        max_translation: 10.0
+        max_rotation: 30.0
 
       memory:
         type: "live_mem_manager"

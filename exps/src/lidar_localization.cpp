@@ -38,8 +38,9 @@ int main(int argc, char **argv) {
   fs::path loc_dir{utils::expand_user(utils::expand_env(loc_dir_str))};
 
   // Output directory
-  const auto data_dir_str = node->declare_parameter<std::string>("data_dir", "/tmp");
-  fs::path data_dir{utils::expand_user(utils::expand_env(data_dir_str))};
+  const auto output_dir_str = node->declare_parameter<std::string>("output_dir", "/tmp");
+  fs::path output_dir{utils::expand_user(utils::expand_env(output_dir_str))};
+  fs::create_directories(output_dir);
 
   // Configure logging
   const auto log_to_file = node->declare_parameter<bool>("log_to_file", false);
@@ -49,13 +50,13 @@ int main(int argc, char **argv) {
   if (log_to_file) {
     // Log into a subfolder of the data directory (if requested to log)
     auto log_name = "vtr-" + timing::toIsoFilename(timing::clock::now());
-    log_filename = data_dir / (log_name + ".log");
+    log_filename = output_dir / (log_name + ".log");
   }
   configureLogging(log_filename, log_debug, log_enabled);
 
   CLOG(WARNING, "test") << "Odometry Directory: " << odo_dir.string();
   CLOG(WARNING, "test") << "Localization Directory: " << loc_dir.string();
-  CLOG(WARNING, "test") << "Output Directory: " << data_dir.string();
+  CLOG(WARNING, "test") << "Output Directory: " << output_dir.string();
 
   std::vector<std::string> parts;
   boost::split(parts, loc_dir_str, boost::is_any_of("/"));
@@ -65,7 +66,7 @@ int main(int argc, char **argv) {
   const auto status_publisher = node->create_publisher<std_msgs::msg::String>(stem + "_lidar_localization", 1);
 
   // Pose graph
-  auto graph = tactic::Graph::MakeShared((data_dir / "graph").string(), true);
+  auto graph = tactic::Graph::MakeShared((output_dir / "graph").string(), true);
 
   // Pipeline
   auto pipeline_factory = std::make_shared<ROSPipelineFactory>(node);
@@ -152,7 +153,8 @@ int main(int argc, char **argv) {
     std::this_thread::sleep_for(std::chrono::milliseconds(test_control.delay()));
 
     ///
-    const auto [timestamp, points] = load_lidar(it->path().string());
+    const auto timestamp = getStampFromPath(it->path().string());
+    const auto points = load_lidar(it->path().string());
 
     CLOG(WARNING, "test") << "Loading lidar frame " << frame << " with timestamp " << timestamp;
 

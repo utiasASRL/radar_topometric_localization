@@ -1,3 +1,5 @@
+#pragma once
+
 #include <filesystem>
 #include <mutex>
 #include <random>
@@ -32,7 +34,7 @@ int64_t getStampFromPath(const std::string &path) {
 
 float getFloatFromByteArray(char *byteArray, uint index) { return *((float *)(byteArray + index)); }
 
-std::pair<int64_t, Eigen::MatrixXd> load_lidar(const std::string &path) {
+Eigen::MatrixXd load_lidar(const std::string &path) {
   std::ifstream ifs(path, std::ios::binary);
   std::vector<char> buffer(std::istreambuf_iterator<char>(ifs), {});
   uint float_offset = 4;
@@ -46,12 +48,7 @@ std::pair<int64_t, Eigen::MatrixXd> load_lidar(const std::string &path) {
       pc(i, j) = getFloatFromByteArray(buffer.data(), bufpos + j * float_offset);
     }
   }
-  // Add offset to timestamps
-  const auto timestamp = getStampFromPath(path);
-  double t = double(timestamp / 1000) * 1.0e-6;
-  pc.block(0, 5, N, 1).array() += t;
-
-  return std::make_pair(timestamp, std::move(pc));
+  return pc;
 }
 
 tactic::EdgeTransform load_T_robot_lidar(const fs::path &path) {
