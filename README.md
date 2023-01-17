@@ -49,7 +49,7 @@ git submodule update --init --remote
 
 Reference: https://github.com/utiasASRL/vtr3/wiki/Installation-Guide
 
-## Download this package
+## Download vtr_testing_radar
 
 This package contains testing code for lidar and radar pipeline. Download it do your local filesystem.
 
