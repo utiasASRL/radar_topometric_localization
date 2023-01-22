@@ -211,6 +211,12 @@ All you need to do is run one of the above bash scripts **inside the contaner**.
 bash <path to parallel_test_odometry.sh or parallel_test_localization.sh>
 ```
 
+For example,
+
+```
+bash ${VTRRROOT}/src/vtr_testing_radar/script/
+```
+
 Then monitor progress by going to the log file of each test.
 
 The log file should be located at
