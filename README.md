@@ -214,7 +214,7 @@ bash <path to parallel_test_odometry.sh or parallel_test_localization.sh>
 For example,
 
 ```
-bash ${VTRRROOT}/src/vtr_testing_radar/script/
+bash ${VTRRROOT}/src/vtr_testing_radar/script/parallel_test_localization.sh
 ```
 
 Then monitor progress by going to the log file of each test.
