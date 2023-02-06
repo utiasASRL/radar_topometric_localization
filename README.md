@@ -108,7 +108,7 @@ Reference: https://github.com/utiasASRL/vtr3/wiki/EXPERIMENTAL-Running-VTR3-from
 Start a new terminal and enter the container
 
 ```Bash
-source /opt/ros/galactic/setup.bash  # source the ROS environment
+source /opt/ros/humble/setup.bash  # source the ROS environment
 cd ${VTRSRC}/main
 colcon build --symlink-install --packages-up-to vtr_lidar vtr_radar vtr_radar_lidar
 ```
@@ -118,7 +118,7 @@ wait until it finishes.
 ## Build and Install vtr_testing_radar (this package)
 
 ```Bash
-source /opt/ros/galactic/setup.bash
+source /opt/ros/humble/setup.bash
 source ${VTRSRC}/main/install/setup.bash # source the vtr3 environment
 cd ~/ASRL/vtr_testing_radar # go to where this repo is located
 colcon build --symlink-install
@@ -154,14 +154,14 @@ pip install pandas
 First launch RVIZ for visualization:
 
 ```Bash
-source /opt/ros/galactic/setup.bash               # source the ROS environment
+source /opt/ros/humble/setup.bash               # source the ROS environment
 ros2 run rviz2 rviz2 -d ${VTRSRC}/rviz/radar.rviz # launch rviz
 ```
 
 Then in another terminal, launch `rqt_reconfigure` for control. Currently supported dynamic reconfigure parameters: `control_test.play` and `control_test.delay_millisec`
 
 ```Bash
-source /opt/ros/galactic/setup.bash
+source /opt/ros/humble/setup.bash
 ros2 run rqt_reconfigure rqt_reconfigure
 ```
 
