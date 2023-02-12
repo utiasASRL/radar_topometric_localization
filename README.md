@@ -29,9 +29,9 @@ Create the following directories in your local filesystem. Later they will be ma
 export VTRROOT=~/ASRL  # (INTERNAL default) root directory of VTR3
 # you can change the following directories to anywhere appropriate
 export VTRSRC=${VTRROOT}/vtr3        # source code of VTR3
-export VTRDEPS=${VTRROOT}/deps       # system dependencies of VTR3
-export VTRTEMP=${VTRROOT}/temp       # temporary data directory for testing
-mkdir -p ${VTRSRC} ${VTRTEMP} ${VTRDEPS}
+export VTRRESULT=${VTRROOT}/results  # result directory
+
+mkdir -p ${VTRSRC} ${VTRRESULT}
 ```
 
 Reference: https://github.com/utiasASRL/vtr3/wiki/Installation-Guide
@@ -170,7 +170,7 @@ ros2 run rqt_reconfigure rqt_reconfigure
 ```Bash
 export VTRRROOT=${VTRROOT}/vtr_testing_radar # location of this repository CHANGE THIS!
 export VTRRDATA=${VTRDATA}/boreas/sequences  # dataset location (where the boreas-xxxxx folders at) CHANGE THIS!
-export VTRRRESULT=${VTRTEMP}/radar/boreas    # default result location
+export VTRRRESULT=${VTRRESULT}/radar/boreas    # default result location
 mkdir -p ${VTRRRESULT}
 ```
 

@@ -8,3 +8,8 @@
 	url = https://github.com/cheneyuwu/vtr_testing_radar.git
         branch = main
         commit = 4956006
+[submodule "pyboreas"]
+	path = pyboreas
+	url = https://github.com/utiasASRL/pyboreas.git
+	branch = master
+	commit = c9163ea

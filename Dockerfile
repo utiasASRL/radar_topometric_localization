@@ -1,13 +1,8 @@
-FROM ubuntu:20.04
+# Dockerfile is heavily based on the VTR3 dockerfile, but with repo-specific directories.
+FROM ubuntu:22.04
 
 CMD ["/bin/bash"]
 
-# Args for setting up non-root users, example command to use your own user:
-# docker build -t <name: vtr3> \
-#   --build-arg USERID=$(id -u) \
-#   --build-arg GROUPID=$(id -g) \
-#   --build-arg USERNAME=$(whoami) \
-#   --build-arg HOMEDIR=${HOME} .
 ARG GROUPID=0
 ARG USERID=0
 ARG USERNAME=root
@@ -16,10 +11,18 @@ ARG HOMEDIR=/root
 RUN if [ ${GROUPID} -ne 0 ]; then addgroup --gid ${GROUPID} ${USERNAME}; fi \
   && if [ ${USERID} -ne 0 ]; then adduser --disabled-password --gecos '' --uid ${USERID} --gid ${GROUPID} ${USERNAME}; fi
 
+# Default number of threads for make build
+ARG NUMPROC=12
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 ## Switch to specified user to create directories
 USER ${USERID}:${GROUPID}
+
+ENV VTRROOT=$(pwd)
+ENV VTRSRC=${VTRROOT}/vtr3 \
+  VTRDATA=${VTRROOT}/data \
+  VTRRESULT=${VTRROOT}/results
 
 ## Switch to root to install dependencies
 USER 0:0
@@ -34,6 +37,14 @@ RUN apt update && apt install -q -y python3 python3-distutils python3-pip
 RUN apt update && apt install -q -y libeigen3-dev
 RUN apt update && apt install -q -y libsqlite3-dev sqlite3
 
+## Install PROJ (8.2.0) (this is for graph_map_server in vtr_navigation)
+RUN apt update && apt install -q -y cmake libsqlite3-dev sqlite3 libtiff-dev libcurl4-openssl-dev
+RUN mkdir -p ${HOMEDIR}/proj && cd ${HOMEDIR}/proj \
+  && git clone https://github.com/OSGeo/PROJ.git . && git checkout 8.2.0 \
+  && mkdir -p ${HOMEDIR}/proj/build && cd ${HOMEDIR}/proj/build \
+  && cmake .. && cmake --build . -j${NUMPROC} --target install
+ENV LD_LIBRARY_PATH=/usr/local/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
 ## Install ROS2
 # UTF-8
 RUN apt install -q -y locales \
@@ -41,43 +52,47 @@ RUN apt install -q -y locales \
   && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 # Add ROS2 key and install from Debian packages
-RUN apt install -q -y curl gnupg2 lsb-release
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
-  && apt update && apt install -q -y ros-galactic-desktop
+  && apt update && apt install -q -y ros-humble-desktop
 
 ## Install VTR specific ROS2 dependencies
 RUN apt update && apt install -q -y \
-  ros-galactic-xacro \
-  ros-galactic-vision-opencv \
-  ros-galactic-perception-pcl ros-galactic-pcl-ros
+  ros-humble-xacro \
+  ros-humble-vision-opencv \
+  ros-humble-perception-pcl ros-humble-pcl-ros
 
 ## Install misc dependencies
 RUN apt update && apt install -q -y \
   tmux \
+  nodejs npm protobuf-compiler \
   libboost-all-dev libomp-dev \
   libpcl-dev \
+  libcanberra-gtk-module libcanberra-gtk3-module \
+  libbluetooth-dev libcwiid-dev \
   python3-colcon-common-extensions \
   virtualenv \
   texlive-latex-extra \
   clang-format
 
 ## Install python dependencies
-# jupyter
-RUN pip3 install pexpect ipympl
-# evaluation
-RUN pip3 install asrl-pylgmath asrl-pysteam
+RUN pip3 install \
+  tmuxp \
+  pyyaml \
+  pyproj \
+  scipy \
+  zmq \
+  flask \
+  flask_socketio \
+  eventlet \
+  python-socketio \
+  python-socketio[client] \
+  websocket-client
 
-## TEB local planner dependencies (to be removed)
-RUN apt update && apt install -q -y libsuitesparse-dev qtdeclarative5-dev qt5-qmake libqglviewer-dev-qt5
-RUN apt update && apt install -q -y \
-  ros-galactic-nav2-costmap-2d \
-  ros-galactic-libg2o \
-  ros-galactic-dwb-critics \
-  ros-galactic-nav2-core \
-  ros-galactic-nav2-msgs \
-  ros-galactic-nav2-util \
-  ros-galactic-nav2-bringup
+RUN apt install htop
+
+# Install vim
+RUN apt update && apt install -q -y vim
 
 ## Switch to specified user
 USER ${USERID}:${GROUPID}

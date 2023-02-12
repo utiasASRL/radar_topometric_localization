@@ -3,16 +3,9 @@
 BUILD_TYPE="Release"
 GENERATOR="Unix Makefiles"
 
-SRC_DIR=$(pwd)
-EXT_SRC_DIR="${SRC_DIR}/external"
-export VTRSRC="${SRC_DIR}/vtr3"
-export EXPSSRC="${SRC_DIR}/exps"
-
-# BUILD_DIR="${SRC_DIR}/cmake-build-${BUILD_TYPE}"
-# EXT_BUILD_DIR=$BUILD_DIR/external
-
-# mkdir -p $BUILD_DIR
-# mkdir -p $EXT_BUILD_DIR
+export VTRROOT=$(pwd)
+export VTRSRC=${VTRROOT}/vtr3
+export VTRTEMP=${VTRROOT}/results
 
 check_status_code() {
 	if [ $1 -ne 0 ]; then
@@ -21,18 +14,9 @@ check_status_code() {
 	fi
 }
 
-# echo "[VTR3] -- [EXTERNAL DEPENDENCIES] -- Generating the cmake project"
-# cd ${EXT_BUILD_DIR}
-# cmake -G "$GENERATOR" -S $EXT_SRC_DIR -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
-# check_status_code $?
-
-# echo "[VTR3] -- [EXTERNAL DEPENDENCIES] -- building CMake Project"
-# cmake --build . --config $BUILD_TYPE
-# check_status_code $?
-
 echo "[VTR3] -- [VTR3] -- building vtr3 packages"
 cd ${VTRSRC}/main
-source /opt/ros/galactic/setup.bash
+source /opt/ros/humble/setup.bash
 colcon build --symlink-install \
 	--packages-up-to vtr_lidar vtr_radar vtr_radar_lidar \
 	--cmake-args \
