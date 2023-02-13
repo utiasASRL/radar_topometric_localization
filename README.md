@@ -18,6 +18,10 @@ Dataset: [Boreas](https://www.boreas.utias.utoronto.ca/#/)
   doi={10.1109/LRA.2022.3192885}
 }
 ```
+
+# Introduction
+This repository is a wrapper for two development repositories, `vtr3` and `vtr_testing_radar`, as well as an evaluation repository `pyboreas`. The goal of this wrapper is to make it easy to reproduce the results presented in the paper cited above. All involved repositories are hosted as submodules in the `external` folder, with specific hashes that have been verified to collaborate together. The installation and experiment sections below provide specific commands to get the wrapper up and running in order to be able to re-generate the results in the paper. The instructions make heavy use of helper scripts, that automate and simplify most of the process. The scripts are commented to hopefully make it easier for a user to modify or expand them for their own applications.
+
 # Installation
 
 ## Installation Setup
