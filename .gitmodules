@@ -7,7 +7,7 @@
 	path = external/vtr_testing_radar
 	url = https://github.com/cheneyuwu/vtr_testing_radar.git
 	branch = main
-	commit = 4956006
+	commit = 4861b49
 [submodule "pyboreas"]
 	path = external/pyboreas
 	url = https://github.com/utiasASRL/pyboreas.git

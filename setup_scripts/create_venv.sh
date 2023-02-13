@@ -9,3 +9,5 @@ pip install pyyaml
 pip install pandas
 
 deactivate
+
+cd $ROOTDIR
