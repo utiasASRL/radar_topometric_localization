@@ -16,5 +16,9 @@ build/
 install/
 log/
 
+# Heavy IO
+data/
+results/
+
 #
 .vscode/

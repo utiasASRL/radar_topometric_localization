@@ -1,5 +1,5 @@
-# Dockerfile is located right outside this folder
-cd ..
+# Assumes that ROOTDIR is set and pointing to radar_topometric_localization root directory
+cd $ROOTDIR
 docker build -t radar_loc \
   --build-arg USERID=$(id -u) \
   --build-arg GROUPID=$(id -g) \

@@ -18,133 +18,44 @@ Dataset: [Boreas](https://www.boreas.utias.utoronto.ca/#/)
   doi={10.1109/LRA.2022.3192885}
 }
 ```
-
 # Installation
 
-## Setup VTR3 Directories
+## Installation Setup
+First, clone this repository and recursively initialize submodules using
 
-Create the following directories in your local filesystem. Later they will be mapped to the docker container.
-
-```Bash
-export VTRROOT=~/ASRL  # (INTERNAL default) root directory of VTR3
-# you can change the following directories to anywhere appropriate
-export VTRSRC=${VTRROOT}/vtr3        # source code of VTR3
-export VTRRESULT=${VTRROOT}/results  # result directory
-
-mkdir -p ${VTRSRC} ${VTRRESULT}
+```Bash 
+git clone git@github.com:utiasASRL/radar_topometric_localization.git
+git submodule update --init --recursive
 ```
 
-Reference: https://github.com/utiasASRL/vtr3/wiki/Installation-Guide
-
-## Download VTR3 Source Code
-
-Also to your local filesystem, so that you don't have to access them from within the docker container.
-
+Then, enter the radar_topometric_localization directory and set it as the root directory using
 ```Bash
-cd ${VTRSRC}
-git clone git@github.com:utiasASRL/vtr3.git .
-git checkout 6d64daa  # commit hash specified by radar_topometric_localization
-git submodule update --init --remote
+export ROOTDIR=$(pwd)
 ```
 
-Reference: https://github.com/utiasASRL/vtr3/wiki/Installation-Guide
-
-## Download vtr_testing_radar
-
-This package contains testing code for lidar and radar pipeline. Download it do your local filesystem.
-
-```Bash
-cd ${VTRROOT}
-git clone git@github.com:cheneyuwu/vtr_testing_radar.git
-cd vtr_testing_radar
-git checkout aeva_cov_interp
-```
-
-## Download pyboreas for evaluation
-
-```Bash
-cd ${VTRROOT}
-git clone git@github.com:utiasASRL/pyboreas.git
-cd pyboreas
-git checkout localization_eval
-```
-
-## Build VTR3 Docker Image
-
-This builds a image that has all dependencies installed.
-
-```Bash
-cd ${VTRSRC}
-docker build -t vtr3_<your_name> \
-  --build-arg USERID=$(id -u) \
-  --build-arg GROUPID=$(id -g) \
-  --build-arg USERNAME=$(whoami) \
-  --build-arg HOMEDIR=${HOME} .
-```
-
-Reference: https://github.com/utiasASRL/vtr3/wiki/EXPERIMENTAL-Running-VTR3-from-a-Docker-Container
-
-## Start the VTR3 Docker container
-
+## Setup Docker container
 Install nvidia docker runtime first: https://nvidia.github.io/nvidia-container-runtime/
 
+Now, build the docker image using
 ```Bash
-docker run -dit --rm --name vtr3 \
-  --privileged \
-  --network=host \
-  --gpus all \
-  -e DISPLAY=$DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v ${HOME}:${HOME}:rw \
-  -v ${HOME}/ASRL:${HOME}/ASRL:rw vtr3_<your_name>
+cd $ROOTDIR
+source setup_scripts/build_docker.sh
 ```
 
-FYI: to start a new terminal with the existing container: `docker exec -it vtr3 bash`
-
-Reference: https://github.com/utiasASRL/vtr3/wiki/EXPERIMENTAL-Running-VTR3-from-a-Docker-Container
-
-## Build and Install VT&R3
-
-Start a new terminal and enter the container
-
+After the image is built (this will take a while), launch a container using
 ```Bash
-source /opt/ros/humble/setup.bash  # source the ROS environment
-cd ${VTRSRC}/main
-colcon build --symlink-install --packages-up-to vtr_lidar vtr_radar vtr_radar_lidar
+source setup_scripts/run_docker.sh
+```
+Note, this script will launch a new container if none currently exist and will join an existing container if one was already launched. FYI: to start a new terminal with the existing container: `docker exec -it radar_loc bash`
+
+Next, build the vtr3 and vtr_testing_radar packages using (this will take a while the first time)
+```Bash
+source setup_scripts/build_packages.sh
 ```
 
-wait until it finishes.
-
-## Build and Install vtr_testing_radar (this package)
-
+Finally, install the pyboreas evaluation tools using
 ```Bash
-source /opt/ros/humble/setup.bash
-source ${VTRSRC}/main/install/setup.bash # source the vtr3 environment
-cd ~/ASRL/vtr_testing_radar # go to where this repo is located
-colcon build --symlink-install
-```
-
-wait until it finishes.
-
-Note that whenever you change any code in the vtr3 repo, you need to re-compile and re-install, do this by re-running the `colcon build ....` command for both vtr3 and then vtr_testing. Always wait until build process on vtr3 finishes before running the build command for vtr_testing.
-
-## Create a python venv to install pyboreas
-
-Within the running container, create a virtual environment at `${VTRROOT}`
-
-```Bash
-cd ${VTRROOT}
-virtualenv venv
-source venv/bin/activate  # activate this environment
-```
-
-Install pyboreas `localization_eval` branch
-
-```Bash
-cd <where you downloaded pyboreas to>
-pip install -e .
-pip install pyyaml
-pip install pandas
+source setup_scripts/create_venv.sh
 ```
 
 # Running Experiments
@@ -155,7 +66,7 @@ First launch RVIZ for visualization:
 
 ```Bash
 source /opt/ros/humble/setup.bash               # source the ROS environment
-ros2 run rviz2 rviz2 -d ${VTRSRC}/rviz/radar.rviz # launch rviz
+ros2 run rviz2 rviz2 -d $ROOTDIR/vtr3/rviz/radar.rviz # launch rviz
 ```
 
 Then in another terminal, launch `rqt_reconfigure` for control. Currently supported dynamic reconfigure parameters: `control_test.play` and `control_test.delay_millisec`
@@ -193,7 +104,6 @@ bash ${VTRRROOT}/src/vtr_testing_radar/script/test_localization.sh ${ODO_INPUT} 
 # Evaluation:
 bash ${VTRRROOT}/src/vtr_testing_radar/script/test_localization_eval.sh ${ODO_INPUT}
 ```
-
 
 ## Running Experiments in Parallel
 

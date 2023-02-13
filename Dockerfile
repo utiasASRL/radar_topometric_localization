@@ -20,7 +20,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 USER ${USERID}:${GROUPID}
 
 ENV VTRROOT=$(pwd)
-ENV VTRSRC=${VTRROOT}/vtr3 \
+ENV VTRSRC=${VTRROOT}/external/vtr3 \
   VTRDATA=${VTRROOT}/data \
   VTRRESULT=${VTRROOT}/results
 
