@@ -50,7 +50,7 @@ After the image is built (this will take a while), launch a container using
 ```Bash
 source setup_scripts/run_docker.sh
 ```
-Note, this script will launch a new container if none currently exist and will join an existing container if one was already launched. FYI: to start a new terminal with the existing container: `docker exec -it radar_loc bash`
+Make sure the `${ROOTDIR}` variable is initialized! Note, this script will launch a new container if none currently exist and will join an existing container if one was already launched. FYI: to start a new terminal with the existing container: `docker exec -it radar_loc bash`
 
 Next, **inside the contaner**, build the vtr3 and vtr_testing_radar packages using (this will take a while the first time)
 ```Bash
@@ -73,11 +73,12 @@ Make sure all variables point to directories in your specific setup!
 
 ## Visualization (Work in Progress)
 
+### RVIZ
 First launch RVIZ for visualization:
 
 ```Bash
 source /opt/ros/humble/setup.bash               # source the ROS environment
-ros2 run rviz2 rviz2 -d $ROOTDIR/vtr3/rviz/radar.rviz # launch rviz
+ros2 run rviz2 rviz2 -d $ROOTDIR/external/vtr3/rviz/radar.rviz # launch rviz
 ```
 
 Then in another terminal, launch `rqt_reconfigure` for control. Currently supported dynamic reconfigure parameters: `control_test.play` and `control_test.delay_millisec`
@@ -86,6 +87,16 @@ Then in another terminal, launch `rqt_reconfigure` for control. Currently suppor
 source /opt/ros/humble/setup.bash
 ros2 run rqt_reconfigure rqt_reconfigure
 ```
+
+### Foxglove
+An alternative visualization approach is to use [Foxglove](https://foxglove.dev). This approach has the advantage of being able to locally visualize ROS topics even in cases where the code is running on a remote machine. For convinience, the Foxglove WebSocket is already installed as part of the standard Dockerfile. This allows you to connect to the remote machine using the web browser or by downloading the [Foxglove Studio](https://foxglove.dev/download), as long as your local machine can reach the remote machine in some manner. 
+
+To use the WebSocket, open another terminal window inside of a set up Docker container and run
+```bash
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765
+```
+
+Then, either [in the browser](https://studio.foxglove.dev) or in the Foxglove Studio application, navigate to `Open Connection -> Foxglove WebSocket` and enter `ws://REMOTE_IP:8765`, where `REMOTE_IP` is the ping-able IP address of your remote machine. Afterwards, all remote machine ROS topics should be visualizable using the Foxglove interface (once a test is running). Additional information about using Foxglove WebSocket can be found at https://github.com/foxglove/ros-foxglove-bridge/.
 
 ## Odometry (Teach) and Localization (Repeat)
 

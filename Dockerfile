@@ -60,7 +60,8 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o
 RUN apt update && apt install -q -y \
   ros-humble-xacro \
   ros-humble-vision-opencv \
-  ros-humble-perception-pcl ros-humble-pcl-ros
+  ros-humble-perception-pcl ros-humble-pcl-ros \
+  ros-humble-foxglove-bridge
 
 ## Install misc dependencies
 RUN apt update && apt install -q -y \
