@@ -160,4 +160,33 @@ for odometry and at
 
 for localization, where `${VTRRESULT}` is set in `setup_container.sh`. After the evaluation of the tests is complete, you should see the output in the terminal. Various other results can be found in the `${VTRRESULT}` directory.
 
+## Installing and Running a Test Sequence
+This repository is set up to run with Boreas seqences, which can be installed from `https://www.boreas.utias.utoronto.ca/#/download`. To facilitate downloading the sequences, the Docker image is set up with the necessary AWS CLI. A script to install a test sequence (approx. 5 Gb) is included to facilitate verifying that all installation has completed sucessfully. This script will install the test sequence in the `data` folder. To download the sequence, run
+
+```Bash
+bash setup_scripts/dl_boreas_test.sh
+```
+
+After the sequence has downloaded, this may take a while depending on your download speed, you can run a radar odometry test on the sequence through
+
+```Bash
+bash runtime/run_test.sh odometry radar boreas-2020-11-26-13-58
+```
+
+The expected output, assuming nothing has been changed from the default configuration file, should be similar to the following
+
+```shell
+WARNING [boreas_odometry.cpp:149] [test] Found 4142 radar data
+WARNING [boreas_odometry.cpp:169] [test] Loading radar frame 0 with timestamp 1606417097528152000
+WARNING [boreas_odometry.cpp:169] [test] Loading radar frame 1 with timestamp 1606417097778155000
+WARNING [odometry_icp_module.cpp:553] [radar.odometry_icp] T_m_r is:     0.007637     0.015923 -1.07134e-05  2.18899e-06  8.45092e-08   0.00219319
+WARNING [odometry_icp_module.cpp:554] [radar.odometry_icp] w_m_r_in_r is:   -0.0214213   -0.0636917  4.28452e-05 -7.50626e-06  1.60892e-07  -0.00437644
+WARNING [boreas_odometry.cpp:169] [test] Loading radar frame 2 with timestamp 1606417098028164000
+WARNING [odometry_icp_module.cpp:553] [radar.odometry_icp] T_m_r is:    0.0194236    0.0177124  0.000548001 -4.29419e-05 -1.01629e-05   0.00356502
+WARNING [odometry_icp_module.cpp:554] [radar.odometry_icp] w_m_r_in_r is:  0.00215017 -0.00707829 -0.00223349 0.000172793 3.52718e-05   0.0107883
+```
+
+Consult the [Boreas download page](https://www.boreas.utias.utoronto.ca/#/download) and the example download script to download additional sequences. Remember that localization can only be run once an odometry test has been run on a different sequence.
+
+
 ## [License](./LICENSE)

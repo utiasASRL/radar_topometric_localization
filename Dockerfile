@@ -95,5 +95,11 @@ RUN apt install htop
 # Install vim
 RUN apt update && apt install -q -y vim
 
+# Install aws dependencies for boreas dataset installation
+RUN apt update && apt upgrade -q -y zip unzip
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+  unzip awscliv2.zip && \
+  ./aws/install
+
 ## Switch to specified user
 USER ${USERID}:${GROUPID}
