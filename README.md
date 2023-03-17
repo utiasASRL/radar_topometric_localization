@@ -161,7 +161,7 @@ for odometry and at
 for localization, where `${VTRRESULT}` is set in `setup_container.sh`. After the evaluation of the tests is complete, you should see the output in the terminal. Various other results can be found in the `${VTRRESULT}` directory.
 
 ## Installing and Running a Test Sequence
-This repository is set up to run with Boreas seqences, which can be installed from `https://www.boreas.utias.utoronto.ca/#/download`. To facilitate downloading the sequences, the Docker image is set up with the necessary AWS CLI. A script to install a test sequence (approx. 5 Gb) is included to facilitate verifying that all installation has completed sucessfully. This script will install the test sequence in the `data` folder. To download the sequence, run
+This repository is set up to run with Boreas seqences, which can be installed from https://www.boreas.utias.utoronto.ca/#/download. To facilitate downloading the sequences, the Docker image is set up with the necessary AWS CLI. A script to install a test sequence (approx. 5 Gb) is included to facilitate verifying that all installation has completed sucessfully. This script will install the test sequence in the `data` folder. To download the sequence, run
 
 ```Bash
 bash setup_scripts/dl_boreas_test.sh
