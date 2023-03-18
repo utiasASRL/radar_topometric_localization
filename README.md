@@ -47,7 +47,7 @@ After the image is built (this will take a while), launch a container using
 ```Bash
 source setup_scripts/run_docker.sh
 ```
-Make sure the `${ROOTDIR}` variable is initialized! Note, this script will launch a new container if none currently exist and will join an existing container if one was already launched. FYI: to start a new terminal with the existing container: `docker exec -it radar_loc bash`
+Make sure the `${ROOTDIR}` variable is initialized! Note, this script will launch a new container if none currently exist and will join an existing container if one was already launched. To keep the launched container running in the background, press `CTRL+P, CTRL+Q`. This will close the image window but leave the container, and any scripts, running in the background. FYI: to start a new terminal with the existing container: `docker exec -it radar_loc bash`
 
 Next, **inside the contaner**, build the vtr3 and vtr_testing_radar packages using (this will take a while the first time)
 ```Bash
