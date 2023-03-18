@@ -93,7 +93,7 @@ To use the WebSocket, open another terminal window inside of a set up Docker con
 ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765
 ```
 
-Then, either [in the browser](https://studio.foxglove.dev) or in the Foxglove Studio application, navigate to `Open Connection -> Foxglove WebSocket` and enter `ws://REMOTE_IP:8765`, where `REMOTE_IP` is the ping-able IP address of your remote machine. Afterwards, all remote machine ROS topics should be visualizable using the Foxglove interface (once a test is running). Additional information about using Foxglove WebSocket can be found at https://github.com/foxglove/ros-foxglove-bridge/.
+Then, either [in the browser](https://studio.foxglove.dev) or in the Foxglove Studio application, navigate to `Open Connection -> Foxglove WebSocket` and enter `ws://REMOTE_IP:8765`, where `REMOTE_IP` is the ping-able IP address of your remote machine. Afterwards, all remote machine ROS topics should be visualizable using the Foxglove interface (once a test is running). The browser will sometimes take a long time to load, so the application is generally recommended. Additional information about using Foxglove WebSocket can be found at https://github.com/foxglove/ros-foxglove-bridge/.
 
 ## Odometry (Teach) and Localization (Repeat)
 
