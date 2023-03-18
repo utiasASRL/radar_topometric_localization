@@ -89,7 +89,7 @@ ros2 run rqt_reconfigure rqt_reconfigure
 An alternative visualization approach is to use [Foxglove](https://foxglove.dev). This approach has the advantage of being able to locally visualize ROS topics even in cases where the code is running on a remote machine. For convinience, the Foxglove WebSocket is already installed as part of the standard Dockerfile. This allows you to connect to the remote machine using the web browser or by downloading the [Foxglove Studio](https://foxglove.dev/download), as long as your local machine can reach the remote machine in some manner. 
 
 To use the WebSocket, open another terminal window inside of a set up Docker container and run
-```bash
+```Bash
 ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765
 ```
 
@@ -172,7 +172,7 @@ bash runtime/run_test.sh odometry radar boreas-2020-11-26-13-58
 
 The expected output, assuming nothing has been changed from the default configuration file, should be similar to the following
 
-```shell
+```Shell
 WARNING [boreas_odometry.cpp:149] [test] Found 4142 radar data
 WARNING [boreas_odometry.cpp:169] [test] Loading radar frame 0 with timestamp 1606417097528152000
 WARNING [boreas_odometry.cpp:169] [test] Loading radar frame 1 with timestamp 1606417097778155000
