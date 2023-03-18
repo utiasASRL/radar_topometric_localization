@@ -29,6 +29,7 @@ First, clone this repository and recursively initialize submodules using
 
 ```Bash 
 git clone git@github.com:utiasASRL/radar_topometric_localization.git
+cd radar_topometric_localization
 git submodule update --init --recursive
 ```
 
