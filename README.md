@@ -25,15 +25,12 @@ This repository is a wrapper for two development repositories, `vtr3` and `vtr_t
 # Installation
 
 ## Installation Setup
-First, clone this repository and recursively initialize submodules using
+First, clone this repository, recursively initialize submodules, and set the root directory using
 
 ```Bash 
 git clone git@github.com:utiasASRL/radar_topometric_localization.git
+cd radar_topometric_localization
 git submodule update --init --recursive
-```
-
-Then, enter the radar_topometric_localization directory and set it as the root directory using
-```Bash
 export ROOTDIR=$(pwd)
 ```
 
