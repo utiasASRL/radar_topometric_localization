@@ -43,7 +43,7 @@ Also to your local filesystem, so that you don't have to access them from within
 ```Bash
 cd ${VTRSRC}
 git clone git@github.com:utiasASRL/vtr3.git .
-git checkout 6d64daa  # commit hash specified by radar_topometric_localization
+git checkout 20623450c195674e09bc96e01a263f0440358b11  # commit hash specified by radar_topometric_localization
 git submodule update --init --remote
 ```
 
@@ -56,8 +56,6 @@ This package contains testing code for lidar and radar pipeline. Download it do 
 ```Bash
 cd ${VTRROOT}
 git clone git@github.com:cheneyuwu/vtr_testing_radar.git
-cd vtr_testing_radar
-git checkout aeva_cov_interp
 ```
 
 ## Download pyboreas for evaluation
@@ -65,8 +63,6 @@ git checkout aeva_cov_interp
 ```Bash
 cd ${VTRROOT}
 git clone git@github.com:utiasASRL/pyboreas.git
-cd pyboreas
-git checkout localization_eval
 ```
 
 ## Build VTR3 Docker Image
