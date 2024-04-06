@@ -110,7 +110,7 @@
 
     odometry:
       icp:
-        type: lidar.odometry_doppler
+        type: lidar.odometry_icp
 
         # continuous time estimation
         use_trajectory_estimation: true
