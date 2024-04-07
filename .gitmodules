@@ -1,15 +1,15 @@
 [submodule "vtr3"]
 	path = external/vtr3
-	url = git@github.com:utiasASRL/vtr3.git
-	branch = main
-	commit = b54968b
+	url = https://github.com/utiasASRL/vtr3.git
+	branch = aeva
+	commit = 930e504
 [submodule "vtr_testing_radar"]
 	path = external/vtr_testing_radar
 	url = https://github.com/cheneyuwu/vtr_testing_radar.git
-	branch = main
-	commit = 4861b49
+	branch = aeva
+	commit = 308d4e1
 [submodule "pyboreas"]
 	path = external/pyboreas
 	url = https://github.com/utiasASRL/pyboreas.git
-	branch = localization_eval
-	commit = 1ed81f8
+	branch = aeva
+	commit = 9493c5b
