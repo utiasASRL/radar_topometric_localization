@@ -1,5 +1,5 @@
 # Dockerfile is heavily based on the VTR3 dockerfile, but with repo-specific directories.
-FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
+FROM ubuntu:22.04
 
 CMD ["/bin/bash"]
 
@@ -93,71 +93,27 @@ RUN pip3 install \
   python-socketio[client] \
   websocket-client
 
-RUN apt install wget
-RUN apt install nano
-
-## install opencv 4.5.1
-RUN apt install -q -y libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python3-dev python3-numpy
-
-RUN mkdir -p ${HOMEDIR}/opencv && cd ${HOMEDIR}/opencv \
-&& git clone https://github.com/opencv/opencv.git . 
-
-RUN cd ${HOMEDIR}/opencv && git checkout 4.6.0
-RUN mkdir -p ${HOMEDIR}/opencv_contrib && cd ${HOMEDIR}/opencv_contrib \
-&& git clone https://github.com/opencv/opencv_contrib.git . 
-RUN cd ${HOMEDIR}/opencv_contrib && git checkout 4.6.0 
-
-
-RUN apt install -q -y build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python3-dev python3-numpy
-# # generate Makefiles (note that install prefix is customized to: /usr/local/opencv_cuda)
-
-
-RUN mkdir -p ${HOMEDIR}/opencv/build && cd ${HOMEDIR}/opencv/build \
-&& cmake -D CMAKE_BUILD_TYPE=RELEASE \
--D CMAKE_INSTALL_PREFIX=/usr/local/opencv_cuda \
--D OPENCV_EXTRA_MODULES_PATH=${HOMEDIR}/opencv_contrib/modules \
--D PYTHON_DEFAULT_EXECUTABLE=/usr/bin/python3.10 \
--DBUILD_opencv_python2=OFF \
--DBUILD_opencv_python3=ON \
--DWITH_OPENMP=ON \
--DWITH_CUDA=ON \
--D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-11.7 \
--DOPENCV_ENABLE_NONFREE=ON \
--D OPENCV_GENERATE_PKGCONFIG=ON \
--DWITH_TBB=ON \
--DWITH_GTK=ON \
--DWITH_OPENMP=ON \
--DWITH_FFMPEG=ON \
--DBUILD_opencv_cudacodec=OFF \
--D BUILD_EXAMPLES=OFF \
--D CUDA_ARCH_BIN=$CUDA_ARCH ..  && make -j16 && make install
-
-
-ENV LD_LIBRARY_PATH=/usr/local/opencv_cuda/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-
 RUN mkdir -p ${HOMEDIR}/.matplotcpp && cd ${HOMEDIR}/.matplotcpp \
-  && git clone https://github.com/lava/matplotlib-cpp.git . \
-  && mkdir -p ${HOMEDIR}/.matplotcpp/build && cd ${HOMEDIR}/.matplotcpp/build \
-  && cmake .. && cmake --build . -j${NUMPROC} --target install
-  
-  
+&& git clone https://github.com/lava/matplotlib-cpp.git . \
+&& mkdir -p ${HOMEDIR}/.matplotcpp/build && cd ${HOMEDIR}/.matplotcpp/build \
+&& cmake .. && cmake --build . -j${NUMPROC} --target install
+
+RUN apt install htop
+RUN apt install ros-humble-velodyne -q -y
+
+# Install vim
+RUN apt update && apt install -q -y vim
+
+#Install debugger
+RUN apt install -q -y libc6-dbg gdb valgrind
+
 ##Install LibTorch
-RUN curl https://download.pytorch.org/libtorch/cu117/libtorch-cxx11-abi-shared-with-deps-2.0.0%2Bcu117.zip --output libtorch.zip
+RUN curl https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.0.1%2Bcpu.zip --output libtorch.zip
 RUN unzip libtorch.zip -d /opt/torch
 RUN rm libtorch.zip
 ENV TORCH_LIB=/opt/torch/libtorch
 ENV LD_LIBRARY_PATH=$TORCH_LIB/lib:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-ENV CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-11.7
 ENV CMAKE_PREFIX_PATH=$TORCH_LIB:$CMAKE_PREFIX_PATH
-
-RUN echo "CUDA_TOOLKIT_ROOT_DIR: ${CUDA_TOOLKIT_ROOT_DIR}"
-
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics
-
-RUN apt install htop
-
-# Install vim
-RUN apt update && apt install -q -y vim
 
 # Install aws dependencies for boreas dataset installation
 RUN apt update && apt upgrade -q -y zip unzip

@@ -16,13 +16,26 @@ mkdir -p ${VTRRRESULT}
 # Load in param file based on sensor
 PARAM_FILE=${ROOTDIR}/runtime/config/${SENSOR}_config.yaml
 
+# Check if SENSOR is "aeva" and ODO_INPUT starts with "boreas-" or "route-"
+if [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == boreas-* ]]; then
+    PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/aeva_boreas.yaml
+    TYPE="aeva_boreas"
+    export VTRRDATA=${BOREAS}
+elif [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == route* ]]; then
+    PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/aeva_hq.yaml
+    TYPE="aeva_hq"
+    export VTRRDATA=${AEVAHQ}
+fi
+
+echo "PARAM FILE IS ${PARAM_FILE}"
+
 # Save param file
 SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
 cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
 
 # Call corresponding script from vtr_testing_radar
 if [ "$1" = "odometry" ]; then
-    bash ${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_odometry.sh ${ODO_INPUT} ${PARAM_FILE}
+    bash ${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_odometry.sh ${ODO_INPUT} ${TYPE}
 else
-    bash ${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_localization.sh ${ODO_INPUT} ${LOC_INPUT} ${PARAM_FILE}
+    bash ${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_localization.sh ${ODO_INPUT} ${LOC_INPUT} ${TYPE}
 fi

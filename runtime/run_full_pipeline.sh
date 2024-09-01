@@ -9,8 +9,9 @@
 ODO_SEQUENCE='boreas-2023-02-15-19-49'
 LOC_SEQUENCES=(
 'boreas-2023-02-15-20-07'
-# 'boreas-2021-01-26-10-59'
-# 'boreas-2021-02-09-12-55'
+# 'boreas-2023-02-15-20-24'
+# 'boreas-2023-02-15-20-43'
+# 'boreas-2023-02-15-21-03'
 )
 
 # Get arguments
@@ -48,14 +49,15 @@ for seq in ${LOC_SEQUENCES[@]}; do
     echo "Executing command: bash $SCRIPT $ODO_SEQUENCE $seq &>/dev/null &"
     ### command to execute
     bash $SCRIPT $ODO_SEQUENCE $seq &>/dev/null &
+    
     pids[${seq}]=$!
     # wait for all pids to finish if reached group size
     if [[ ${#pids[@]} -ge ${GROUPSIZE} ]]; then
-        for key in ${!pids[@]}; do
-            wait ${pids[${key}]}
-            echo "Process ${key} finished with return code ${?}"
-            unset pids[${key}]
-        done
+    for key in ${!pids[@]}; do
+        wait ${pids[${key}]}
+        echo "Process ${key} finished with return code ${?}"
+        unset pids[${key}]
+    done
     fi
 done
 

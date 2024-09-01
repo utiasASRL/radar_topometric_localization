@@ -7,16 +7,19 @@
 MODE=$1         # [odometry, localization]
 SENSOR=$2       # [radar, lidar, radar_lidar]
 ODO_INPUT=$3    # Boreas sequence
+TYPE=$4         # For aeva only
 
 # Set results subfolder, VTRRESULT is set in setup_container.sh
 export VTRRRESULT=${VTRRESULT}/${SENSOR}
 
-# Load in param file based on sensor
-PARAM_FILE=${ROOTDIR}/runtime/config/${SENSOR}_config.yaml
-
-# Save param file
-SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
-cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
+# Check if SENSOR is "aeva" and ODO_INPUT starts with "boreas-" or "route-"
+if [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == boreas-* ]]; then
+    TYPE="aeva_boreas"
+    export VTRRDATA=${BOREAS}
+elif [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == route* ]]; then
+    TYPE="aeva_hq"
+    export VTRRDATA=${AEVAHQ}
+fi
 
 # Call corresponding script from vtr_testing_radar
-bash ${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}_eval.sh ${ODO_INPUT} ${PARAM_FILE}
+bash ${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}_eval.sh ${ODO_INPUT} ${TYPE}

@@ -7,25 +7,17 @@
 if [ "$1" = "odometry" ]; then
     # Odometry sequences, SET THESE YOURSELF
     SEQUENCES=(
-    'boreas-2020-11-26-13-58'
-    'boreas-2020-12-04-14-00'
-    'boreas-2021-01-26-10-59'
-    'boreas-2021-02-09-12-55'
-    'boreas-2021-03-09-14-23'
-    'boreas-2021-06-29-18-53'
-    'boreas-2021-09-08-21-00'
+    'boreas-2023-02-15-19-49'
     )
 else
     # Odometry reference for localization, SET THIS YOURSELF
-    REFERENCE='boreas-2020-11-26-13-58'
+    REFERENCE='boreas-2023-02-15-19-49'
     # Localization sequences, SET THESE YOURSELF
     SEQUENCES=(
-    'boreas-2020-12-04-14-00'
-    'boreas-2021-01-26-10-59'
-    'boreas-2021-02-09-12-55'
-    'boreas-2021-03-09-14-23'
-    'boreas-2021-06-29-18-53'
-    'boreas-2021-09-08-21-00'
+    'boreas-2023-02-15-20-07'
+    'boreas-2023-02-15-20-24'
+    'boreas-2023-02-15-20-43'
+    # 'boreas-2023-02-15-21-03' # different route
     )
 fi
 

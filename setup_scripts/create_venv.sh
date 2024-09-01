@@ -7,6 +7,7 @@ cd $ROOTDIR/external/pyboreas
 pip install -e .
 pip install pyyaml
 pip install pandas
+pip install catkin_pkg
 
 deactivate
 
