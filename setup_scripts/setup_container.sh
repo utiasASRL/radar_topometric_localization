@@ -4,7 +4,9 @@ export VTRROOT=${ROOTDIR}                   # This is required for some internal
 export VTRSRC=${ROOTDIR}/external/vtr3
 export VTRRROOT=${ROOTDIR}/external/vtr_testing_radar
 export VTRRESULT=${ROOTDIR}/results         # POINT THIS TO WHERE YOU WANT TO STORE RESULTS
-export VTRRDATA=${ROOTDIR}/data             # POINT THIS TO DATA DIRECTORY
+# export VTRRDATA=${ROOTDIR}/data             # POINT THIS TO DATA DIRECTORY
+export VTRRDATA=${ROOTDIR}/../data/boreas             # POINT THIS TO DATA DIRECTORY
+
 
 # Source setups
 source /opt/ros/humble/setup.bash

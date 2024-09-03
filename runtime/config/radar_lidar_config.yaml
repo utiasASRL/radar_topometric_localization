@@ -83,7 +83,7 @@
         # TODO: make cart_resolution an integer mult of radar_resolution
         cart_resolution: 0.2384 # m/pixel of BEV Cartesian radar image
         beta: 0.049 # Doppler correction factor (set to 0 to turn this off)
-        kstrong:
+        kstrongest:
           kstrong: 12 # k-strongest per azimuth to retain
           threshold2: 0.0 # threshold for k-strongest (mult of mean)
           threshold3: 0.216 # treshold for k-strongest (constant)

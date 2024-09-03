@@ -5,13 +5,18 @@ then
 	docker exec -it radar_loc_$(whoami) bash
     cd $ROOTDIR
 else
+	docker volume create --driver local \
+    --opt type=ext4 \
+    --opt device=/dev/sdb1 \
+    ssd_test
+
 	echo 'New container run initialized.'
 	docker run -it --rm --name radar_loc_$(whoami) \
 	--privileged \
 	--network=host \
-	--gpus all \
 	-e DISPLAY=$DISPLAY \
 	-e ROOTDIR=$ROOTDIR \
+	-v ssd_test:/ssd:rw \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
 	-v ${HOME}/.Xauthority:${HOME}/.Xauthority:rw \
 	-v ${HOME}:${HOME}:rw \
