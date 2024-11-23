@@ -37,6 +37,7 @@ RUN apt update && apt install -q -y python3 python3-distutils python3-pip
 RUN apt update && apt install -q -y libeigen3-dev
 RUN apt update && apt install -q -y libsqlite3-dev sqlite3
 RUN apt install -q -y libc6-dbg gdb valgrind
+RUN apt update && apt-get install -y sshfs
 
 ## Install PROJ (8.2.0) (this is for graph_map_server in vtr_navigation)
 RUN apt update && apt install -q -y cmake libsqlite3-dev sqlite3 libtiff-dev libcurl4-openssl-dev
@@ -55,14 +56,16 @@ ENV LANG=en_US.UTF-8
 # Add ROS2 key and install from Debian packages
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
-  && apt update && apt install -q -y ros-humble-desktop
+  && apt update && apt install -q -y ros-humble-desktop-full
 
 ## Install VTR specific ROS2 dependencies
 RUN apt update && apt install -q -y \
   ros-humble-xacro \
   ros-humble-vision-opencv \
   ros-humble-perception-pcl ros-humble-pcl-ros \
-  ros-humble-rmw-cyclonedds-cpp
+  ros-humble-rmw-cyclonedds-cpp \
+  ros-humble-foxglove-bridge \
+  ros-humble-rosbag2 
 
 RUN apt install ros-humble-tf2-tools
 
