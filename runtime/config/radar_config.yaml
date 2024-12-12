@@ -79,16 +79,16 @@
       conversion:
         type: radar.navtech_extractor
         radar_resolution: 0.0596
-        detector: modified_cacfar # choose detector \in (kstrongest, cen2018, cacfar, oscfar, modified_cacfar)
+        detector: cacfar # choose detector \in (kstrongest, cen2018, cacfar, oscfar...)
         minr: 2.0 # mininum detection distance
         maxr: 80.0 # maximum detection distance
+        save_pointcloud_overlay: false
         # TODO: make cart_resolution an integer mult of radar_resolution
         cart_resolution: 0.2384 # m/pixel of BEV Cartesian radar image
         beta: 0.049 # Doppler correction factor (set to 0 to turn this off)
         kstrongest:
           kstrong: 12 # k-strongest per azimuth to retain
-          threshold2: 0.0 # threshold for k-strongest (mult of mean)
-          threshold3: 0.216 # treshold for k-strongest (constant)
+          static_threshold: 0.216 # treshold for k-strongest (constant)
         cen2018:
           zq: 2.5
           sigma: 8
@@ -96,21 +96,11 @@
           width: 41
           guard: 2
           threshold: 1.0
-          threshold2: 0.0 # cfar: mult of mean, T = threshold * Z + threshold2 * mean + threshold3
-          threshold3: 0.08
         oscfar:
           width: 41
           guard: 0
           kstat: 20 # used in oscfar, kth statistic to return in window
           threshold: 1.0
-          threshold2: 0.0 # cfar: mult of mean, T = threshold * Z + threshold2 * mean + threshold3
-          threshold3: 0.07
-        modified_cacfar:
-          width: 101 # Old: 101, New: 41
-          guard: 5 # Old: 5, New: 2
-          threshold: 1.0 # Old: 0.2, New: 1,.0
-          threshold2: 0.0 # Old: 4.0, New: 0.0 cfar: mult of mean, T = threshold * Z + threshold2 * mean + threshold3
-          threshold3: 0.09 # Old: 0.0, New: 0.08
 
         visualize: true
 

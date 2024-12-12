@@ -8,6 +8,41 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import re
 
+# USER INPUT: Set True to generate graph pdfs
+graph_it = True
+
+# USER INPUT: Set True to average sequences of single parameter sweeps
+avg_1d = True
+
+# use_old_data = True
+
+# USER INPUT: Set to "2d" for 2D graphs, "3d" for 3D graphs
+graph_mode = "3d"
+
+# USER INPUT: Set the extractor ("kstrongest", "cacfar", "caso_cfar", "cago_cfar", "bfar", "oscfar", "tm_cfar", "msca_cfar", "is_cfar", "vi_cfar", "cen2018", "cen2019", "cfear_kstrong")
+config = "kstrongest"
+
+# USER INPUT: Set the sequences to be averaged and graphed
+# #TRAINING OLD
+sequences = ['boreas-2020-12-01-13-26', 'boreas-2021-03-02-13-38', 'boreas-2021-04-29-15-55','boreas-2021-06-17-17-52', 'boreas-2021-09-07-09-35','boreas-2021-08-05-13-34']
+
+# sequences = ['boreas-2021-03-02-13-38','boreas-2021-04-29-15-55']
+# 'boreas-2020-12-01-13-26', 'boreas-2021-03-02-13-38', 'boreas-2021-06-17-17-52', 'boreas-2021-04-29-15-55']
+
+#TESTING OLD
+# sequences = ['boreas-2020-12-04-14-00','boreas-2021-01-26-10-59','boreas-2021-02-09-12-55','boreas-2021-03-09-14-23','boreas-2021-06-29-18-53','boreas-2021-09-08-21-00']
+
+# # #TRAINING NEW
+# sequences=['boreas-2021-10-05-15-35','boreas-2021-10-15-12-35','boreas-2021-10-22-11-36','boreas-2021-10-26-12-35']
+
+# sequences=['boreas-2021-10-22-11-36','boreas-2021-10-26-12-35']
+# sequences = ['boreas-2021-10-15-12-35','boreas-2021-10-22-11-36']
+# sequences=['boreas-2021-10-22-11-36','boreas-2021-10-26-12-35'] 
+
+# # NEW Testing
+# sequences=['boreas-2021-11-02-11-16', 'boreas-2021-11-06-18-55', 'boreas-2021-11-14-09-47', 'boreas-2021-11-16-14-10', 'boreas-2021-11-23-14-27', 'boreas-2021-11-28-09-18']
+
+
 
 ROOTDIR = os.environ['ROOTDIR']
 VTRRESULT = os.environ['VTRRESULT']
@@ -18,54 +53,6 @@ SENSOR = "radar"
 # Set results subfolder, VTRRESULT is set in setup_container.sh
 VTRRRESULT = os.path.join(VTRRESULT,SENSOR)
 os.environ['VTRRRESULT'] = VTRRRESULT
-
-graph_it = True
-avg_1d = True
-use_old_data = False
-graph_mode = "3d" #"3d"
-# config = "modified_cacfar_power"
-# config = "caso_cfar"
-# config = "cago_cfar"
-config = "bfar_pure"
-# config = "oscfar"
-# config = "tm_cfar"
-# config = "msca_cfar"
-# config = "is_cfar"
-# config = "vi_cfar"
-# config = "msca_cfar"
-# config = "kstrongest"
-# config = "cen2018"
-# config = "cen2019"
-# config = "cfear_kstrong"
-
-
-# sequences = ['boreas-2020-11-26-13-58', 'boreas-2021-01-26-10-59', 'boreas-2021-03-09-14-23']
-# sequences = ['boreas-2020-11-26-13-58']
-# boreas-2020-12-01-13-26
-# boreas-2021-03-02-13-38
-# boreas-2021-04-29-15-55
-# boreas-2021-06-17-17-52
-# sequences = ['boreas-2021-06-17-17-52']
-
-# #TRAINING OLD
-# sequences = ['boreas-2020-12-01-13-26', 'boreas-2021-03-02-13-38', 'boreas-2021-04-29-15-55','boreas-2021-06-17-17-52', 'boreas-2021-09-07-09-35','boreas-2021-08-05-13-34']
-
-# sequences = ['boreas-2021-03-02-13-38','boreas-2021-04-29-15-55']
-# 'boreas-2020-12-01-13-26', 'boreas-2021-03-02-13-38', 'boreas-2021-06-17-17-52', 'boreas-2021-04-29-15-55']
-
-#TESTING OLD
-# sequences = ['boreas-2020-12-04-14-00','boreas-2021-01-26-10-59','boreas-2021-02-09-12-55','boreas-2021-03-09-14-23','boreas-2021-06-29-18-53','boreas-2021-09-08-21-00']
-
-# #TRAINING NEW
-sequences=['boreas-2021-10-05-15-35','boreas-2021-10-15-12-35']#,'boreas-2021-10-22-11-36','boreas-2021-10-26-12-35']
-
-# sequences=['boreas-2021-10-22-11-36','boreas-2021-10-26-12-35']
-# sequences = ['boreas-2021-10-15-12-35']
-# sequences=['boreas-2021-10-22-11-36','boreas-2021-10-26-12-35'] 
-
-# # NEW Testing
-# sequences=['boreas-2021-11-02-11-16', 'boreas-2021-11-06-18-55', 'boreas-2021-11-14-09-47', 'boreas-2021-11-16-14-10', 'boreas-2021-11-23-14-27', 'boreas-2021-11-28-09-18']
-
 
 def parse_number_from_name(name):
     name = name.replace((config+"_"), '')
@@ -124,7 +111,6 @@ def get_icp_failure_count(file_name,sequence):
 
     most_recent_file = max(log_files, key=os.path.getmtime)
 
-    # Found 3576 radar data
     contents = read_first_lines(most_recent_file, num_lines=100)
 
     # Use regular expression to find the number in the format "Found X radar data"
@@ -167,19 +153,11 @@ for count,seq in enumerate(sequences):
     
     csv_prefix = seq+"_"+config
 
-    # matching_files= [os.path.join(VTRRRESULT,"boreas-2020-11-26-13-58_bfar_pure_2024-07-05_17:18:14.808873.csv")]
-
     matching_files = []
-    
-    if use_old_data:
-        for file in os.listdir(os.path.join(VTRRRESULT,"detectors",config,"data","old_data",seq)):
-            if fnmatch.fnmatch(file, f'*{csv_prefix}*.csv'):
-                matching_files.append(os.path.join(VTRRRESULT,"detectors",config,"data","old_data",seq,file))
-
-    else:
-        for file in os.listdir(os.path.join(VTRRRESULT,"detectors",config,"data",seq)):
-            if fnmatch.fnmatch(file, f'*{csv_prefix}*.csv'):
-                matching_files.append(os.path.join(VTRRRESULT,"detectors",config,"data",seq,file))
+  
+    for file in os.listdir(os.path.join(VTRRRESULT,"detectors",config,"data",seq)):
+        if fnmatch.fnmatch(file, f'*{csv_prefix}*.csv'):
+            matching_files.append(os.path.join(VTRRRESULT,"detectors",config,"data",seq,file))
 
 
     # Read csv files and convert to pandas table
@@ -208,6 +186,7 @@ for count,seq in enumerate(sequences):
 
 sequence_df = pd.concat(sequence_df)
 
+# Create list of random colours
 hexadecimal_alphabets = '0123456789ABCDEF'
 color = ["#" + ''.join([random.choice(hexadecimal_alphabets) for j in range(6)]) for i in range(len(sequences))]
 

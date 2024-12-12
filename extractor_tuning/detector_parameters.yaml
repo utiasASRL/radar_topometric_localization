@@ -1,0 +1,128 @@
+# For each detector, modify the min and max values of the parameters as well as the step size.
+# If you wish to use only one value for a parameter, set the min and max values to the same value.
+/**:
+  detector:
+    kstrongest:
+      parameter_count: 2
+      parameters:
+        kstrong:
+          min: 3
+          max: 3
+          step: 1
+        static_threshold:
+          min: 0.35
+          max: 0.35
+          step: 0.05
+    cacfar:
+      parameter_count: 1
+      parameters:
+        threshold:
+          min: 55.0
+          max: 55.0
+          step: 10.0
+    cago_cfar:
+      parameter_count: 1
+      parameters:
+        threshold:
+          min: 50.0
+          max: 50.0
+          step: 10.0
+    caso_cfar:
+      parameter_count: 1
+      parameters:
+        threshold:
+          min: 3700.0
+          max: 3700.0
+          step: 200.0 
+    cfear_kstrong:
+      parameter_count: 2
+      parameters:
+        kstrong:
+          min: 20
+          max: 20
+          step: 4
+        r: 
+          min: 0.5
+          max: 0.5
+          step: 0.25        
+    bfar:
+      parameter_count: 2
+      parameters:
+        threshold:
+          min: 12.5
+          max: 12.5
+          step: 2.5
+        static_threshold:
+          min: 0.3
+          max: 0.3
+          step: 0.05
+    oscfar:
+      parameter_count: 1
+      parameters:
+          threshold: 
+            min: 1000.0
+            max: 1000.0
+            step: 20.0
+    tm_cfar:
+      parameter_count: 2
+      parameters:
+        threshold:
+          min: 160.0
+          max: 200.0 
+          step: 20.0
+        N1:
+          min: 44
+          max: 44
+          step: 5
+    is_cfar:
+      parameter_count: 3
+      parameters:
+        alpha_I:
+          min: 0.003
+          max: 0.003
+          step: 5.0
+        beta_I:
+          min: 5.0
+          max: 5.0
+          step: 5.0
+
+    vi_cfar:
+      parameter_count: 2
+      parameters:
+        K_VI:
+          min: 5.0
+          max: 5.0
+          step: 3.0
+        C_N:
+          min: 2000.0
+          max: 2000.0
+          step: 200.0
+    msca_cfar:
+      parameter_count: 2
+      parameters:
+        threshold:
+          min: 400.0
+          max: 400.0
+          step: 20.0
+        M:
+          min: 10
+          max: 10
+          step: 2
+    cen2018:
+      parameter_count: 1
+      parameters:
+        sigma:
+          min: 6
+          max: 6
+          step: 2
+        zq:
+          min: 2.0
+          max: 2.0
+          step: 0.25
+    cen2019:
+      parameter_count: 1
+      parameters:
+        l_max:
+          min: 300
+          max: 300
+          step: 100

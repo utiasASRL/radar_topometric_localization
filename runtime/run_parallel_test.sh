@@ -6,35 +6,14 @@
 # USER INPUT: SELECT THE SEQUENCES YOU WISH TO TEST IN PARALLEL FOR EITHER MODE
 if [ "$1" = "odometry" ]; then
     # Odometry sequences, SET THESE YOURSELF
-    # SEQUENCES=(
-    # 'boreas-2020-11-26-13-58'
-    # 'boreas-2020-12-04-14-00'
-    # 'boreas-2021-01-26-10-59'
-    # 'boreas-2021-02-09-12-55'
-    # 'boreas-2021-03-09-14-23'
-    # 'boreas-2021-06-29-18-53'
-    # 'boreas-2021-09-08-21-00'
-    # )
-
-    # SEQUENCES=(
-    # 'boreas-2021-01-26-10-59'
-    # 'boreas-2021-03-09-14-23'
-    # )
-    # SEQUENCES=(
-    # 'boreas-2021-01-26-10-59'
-    # )
-    # SEQUENCES=(
-    # 'boreas-2021-03-09-14-23'
-    # )
-    # SEQUENCES=(
-    # 'boreas-2020-11-26-13-58'
-    # )
     SEQUENCES=(
-    # 'boreas-2020-12-01-13-26'
-    # 'boreas-2021-03-02-13-38'
-    # 'boreas-2021-08-05-13-34'
-    # 'boreas-2021-06-17-17-52'
-    'boreas-2021-10-05-15-35'
+    'boreas-2020-11-26-13-58'
+    'boreas-2020-12-04-14-00'
+    'boreas-2021-01-26-10-59'
+    'boreas-2021-02-09-12-55'
+    'boreas-2021-03-09-14-23'
+    'boreas-2021-06-29-18-53'
+    'boreas-2021-09-08-21-00'
     )
 else
     # Odometry reference for localization, SET THIS YOURSELF
@@ -64,9 +43,9 @@ GROUPSIZE=20
 SCRIPT="${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}.sh"
 EVAL_SCRIPT="${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}_eval.sh"
 
-# # Save param file
-# SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
-# cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
+# Save param file
+SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
+cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
 
 declare -A pids
 
@@ -75,8 +54,7 @@ for seq in ${SEQUENCES[@]}; do
     if [ "$1" = "odometry" ]; then
         echo "Executing command: bash $SCRIPT $seq &>/dev/null &"
         ### command to execute
-        # bash $SCRIPT $seq &>/dev/null &
-        bash $SCRIPT $seq 
+        bash $SCRIPT $seq &>/dev/null &
     else
         echo "Executing command: bash $SCRIPT $REFERENCE $seq &>/dev/null &"
         ### command to execute
