@@ -67,9 +67,9 @@
       parameter_count: 2
       parameters:
         threshold:
-          min: 160.0
-          max: 200.0 
-          step: 20.0
+          min: 1050.0
+          max: 1050.0 
+          step: 150.0
         N1:
           min: 44
           max: 44

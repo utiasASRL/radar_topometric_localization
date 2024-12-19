@@ -14,7 +14,7 @@
         # "tactic.module.graph_mem_manager",
         # pipeline specific
         "radar.pipeline",
-        # "radar.navtech_extractor",
+        # "radar.pc_extractor",
         # "radar.preprocessing",
         # "radar.mcransac",
         # "radar.odometry_icp",
@@ -77,7 +77,16 @@
 
     preprocessing:
       conversion:
-        type: radar.navtech_extractor
+        type: radar.offline_converter
+        cart_resolution: 0.2384 # m/pixel of BEV Cartesian radar image
+        radar_resolution: 0.0596
+        range_offset: -0.31
+        minr: 2.0 # mininum detection distance
+        maxr: 80.0 # maximum detection distance
+        beta: 0.049 # Doppler correction factor (set to 0 to turn this off)
+        # chirp_type:
+      extraction:
+        type: radar.pc_extractor
         radar_resolution: 0.0596
         detector: cacfar # choose detector \in (kstrongest, cen2018, cacfar, oscfar...)
         minr: 2.0 # mininum detection distance
@@ -150,6 +159,9 @@
 
         # threshold
         min_matched_ratio: 0.8
+        max_trans_vel_diff: 1000.0 # 1000.0 (or some large number) to disable
+        max_rot_vel_diff: 1000.0 # 1000.0 (or some large number) to disable
+        max_transformation_diff: 1000.0 # 1000.0 (or some large number) to disable
 
         visualize: true
 

@@ -25,8 +25,8 @@ CONFIGS=(
 
 # USER INPUT: Select the sequeces you wish to test
 SEQUENCES=(
-# 'boreas-2021-10-05-15-35'
-'boreas-2021-10-15-12-35' 
+'boreas-2021-10-05-15-35'
+# 'boreas-2021-10-15-12-35' 
 # 'boreas-2021-10-22-11-36' 
 # 'boreas-2021-10-26-12-35' 
 # 'boreas-2021-11-02-11-16' 
@@ -41,7 +41,7 @@ SEQUENCES=(
 PARAM_FILE=${VTRRROOT}/src/vtr_testing_radar/config/boreas.yaml
 
 # USER INPUT: Specify the number of extractor-sequence pairs you wish to sweep in parallel
-GROUPSIZE=2
+GROUPSIZE=12
 
 # IMPORTANT NOTE: You must also specify the variable 'max_process_count' in parameter_search.py.
 # This value will dictate the number of processes that run for every extractor sequence pair.
@@ -58,14 +58,11 @@ for config in ${CONFIGS[@]}; do
     for seq in ${SEQUENCES[@]}; do
 
     echo "Running Extractor, Sequence Pair: $config , $seq"
-    python ${ROOTDIR}/extractor_tuning/parameter_search.py --config ${config} --config_path ${PARAM_FILE} --mode ${MODE} --sensor ${SENSOR} --seq ${seq}
-    # python ${ROOTDIR}/extractor_tuning/parameter_search.py --config ${config} --config_path ${PARAM_FILE} --mode ${MODE} --sensor ${SENSOR} --seq ${seq} &
+    python ${ROOTDIR}/extractor_tuning/parameter_search.py --config ${config} --config_path ${PARAM_FILE} --mode ${MODE} --sensor ${SENSOR} --seq ${seq} &
 
     sleep 1
     
     pids[${seq}]=$!
-    # pid=$!
-    # pids[${pid}]=$pid
 
     # echo "Number of active processes: ${#pids[@]}"
     # wait for all pids to finish if reached group size

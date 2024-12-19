@@ -14,15 +14,12 @@ import signal
 import sys
 from pathlib import Path
 sys.path.append(os.path.join(Path(__file__).resolve().parent.parent,'external/'))
-# # Print all paths in sys.path
-# for path in sys.path:
-#     print(path)
 import vtr_testing_radar.src.vtr_testing_radar.script.boreas_generate_odometry_result as boreas_generate_odometry_result
 from pyboreas.eval.odometry import eval_odom, eval_odom_vel
 
 
 # USER INPUT: Set to True if you already have the results from a particular odometry sequence and you just wish to evaluate
-just_eval = True
+just_eval = False
 
 # USER INPUT: Set to True if you want to evaluate velocity metrics
 eval_vel = True
@@ -32,13 +29,12 @@ dense_logging = False
 
 # USER INPUT: Set the number of processes which will run in parallel. 
 # This should be specified in conjunction with GROUPSIZE in run_parallel_test_multi_extractor.sh
-max_process_count = 32
+max_process_count = 12
 
 # USER INPUT: Limit the maximum number of points an extractor should extract. 
 # If more points are extracted from any given radar frame, that process will halt. 
 # Too many points will make ICP too slow.
 max_points = 2500
-
 
 processes = []
 result_dirs = []
@@ -336,25 +332,30 @@ if __name__ == "__main__":
     yaml.allow_duplicate_keys = True
     yaml.explicit_start = True
 
-    with open('detector_parameters.yaml', 'r') as yaml_file:
+    detector_parameters_path = os.path.join(Path(__file__).resolve().parent.parent,'extractor_tuning/detector_parameters.yaml')
+    with open(detector_parameters_path, 'r') as yaml_file:
         data = yaml.load(yaml_file)
 
     with open(config_path, 'r') as config_file:
         config_data = yaml.load(config_file)
 
-    # Add in extractor logs to get point count
-    updated_tactics = config_data['/**']['ros__parameters']['log_enabled']
-    if "radar.navtech_extractor" not in updated_tactics:
-        updated_tactics.append("radar.navtech_extractor")
-        config_data['/**']['ros__parameters']['log_enabled'] = updated_tactics
+    # Add in extractor logs to get point count and timing info
+    tactics = config_data['/**']['ros__parameters']['log_enabled']
 
     if dense_logging == False:
-        sparse_tactics = ["radar.pipeline", "tactic", "tactic.module", "radar.navtech_extractor"]
+        sparse_tactics = ["radar.pipeline", "tactic", "tactic.module", "radar.pc_extractor"]
         config_data['/**']['ros__parameters']['log_enabled'] = sparse_tactics
+    else: 
+        # Ensure that the necessary logs are enabled
+        if "radar.pipeline" not in tactics: tactics.append("radar.pipeline")
+        if "tactic" not in tactics: tactics.append("tactic")
+        if "tactic.module" not in tactics: tactics.append("tactic.module")
+        if "radar.pc_extractor" not in tactics: tactics.append("radar.pc_extractor")
+        config_data['/**']['ros__parameters']['log_enabled'] = tactics
 
     # Disable visualization to prevent parallel runs from overflowing ROS
     config_data['/**']['ros__parameters']['tactic']['visualize'] = False
-    config_data['/**']['ros__parameters']['preprocessing']['conversion']['visualize'] = False
+    config_data['/**']['ros__parameters']['preprocessing']['extraction']['visualize'] = False
     config_data['/**']['ros__parameters']['preprocessing']['filtering']['visualize'] = False
     config_data['/**']['ros__parameters']['odometry']['mcransac']['visualize'] = False
     config_data['/**']['ros__parameters']['odometry']['icp']['visualize'] = False
@@ -362,7 +363,7 @@ if __name__ == "__main__":
     config_data['/**']['ros__parameters']['localization']['recall']['visualize'] = False
 
     # Set yaml to use the correct config
-    config_data['/**']['ros__parameters']['preprocessing']['conversion']['detector'] = config
+    config_data['/**']['ros__parameters']['preprocessing']['extraction']['detector'] = config
 
     config_settings = data['/**']['detector'][config]
 
@@ -380,7 +381,7 @@ if __name__ == "__main__":
             val_1 = round(val_1, 3)
         if parameter_names[1] is None:
             # Change parameters in yaml
-            config_data['/**']['ros__parameters']['preprocessing']['conversion'][config][parameter_names[0]] = val_1
+            config_data['/**']['ros__parameters']['preprocessing']['extraction'][config][parameter_names[0]] = val_1
 
             process, result = run_test(config_data=config_data, MODE=mode, SENSOR=sensor, SEQUENCE=seq, config_type=config, val_1=val_1)
             processes.append(process)
@@ -398,8 +399,8 @@ if __name__ == "__main__":
 
             if parameter_names[2] is None:
                 # Change parameters in yaml
-                config_data['/**']['ros__parameters']['preprocessing']['conversion'][config][parameter_names[0]] = val_1
-                config_data['/**']['ros__parameters']['preprocessing']['conversion'][config][parameter_names[1]] = val_2
+                config_data['/**']['ros__parameters']['preprocessing']['extraction'][config][parameter_names[0]] = val_1
+                config_data['/**']['ros__parameters']['preprocessing']['extraction'][config][parameter_names[1]] = val_2
 
                 process, result = run_test(config_data=config_data, MODE=mode, SENSOR=sensor, SEQUENCE=seq, config_type=config, val_1=val_1, val_2=val_2)
                 processes.append(process)
@@ -415,9 +416,9 @@ if __name__ == "__main__":
                     val_3 = round(val_3, 3)
 
                 # Change parameters in yaml
-                config_data['/**']['ros__parameters']['preprocessing']['conversion'][config][parameter_names[0]] = val_1
-                config_data['/**']['ros__parameters']['preprocessing']['conversion'][config][parameter_names[1]] = val_2
-                config_data['/**']['ros__parameters']['preprocessing']['conversion'][config][parameter_names[2]] = val_3
+                config_data['/**']['ros__parameters']['preprocessing']['extraction'][config][parameter_names[0]] = val_1
+                config_data['/**']['ros__parameters']['preprocessing']['extraction'][config][parameter_names[1]] = val_2
+                config_data['/**']['ros__parameters']['preprocessing']['extraction'][config][parameter_names[2]] = val_3
 
                 process, result = run_test(config_data=config_data, MODE=mode, SENSOR=sensor, SEQUENCE=seq, config_type=config, val_1=val_1, val_2=val_2, val_3=val_3)
                 processes.append(process)
