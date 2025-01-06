@@ -14,7 +14,7 @@ export VTRRRESULT=${VTRRESULT}/${SENSOR}
 mkdir -p ${VTRRRESULT}
 
 # Load in param file based on sensor
-PARAM_FILE=${ROOTDIR}/runtime/config/${SENSOR}_config.yaml
+PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/boreas.yaml
 
 # Check if SENSOR is "aeva" and ODO_INPUT starts with "boreas-" or "route-"
 if [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == boreas-* ]]; then

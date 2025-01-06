@@ -17,7 +17,7 @@ if [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == boreas-* ]]; then
     TYPE="aeva_boreas"
     export VTRRDATA=${BOREAS}
 elif [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == 2024-* ]]; then
-    TYPE="aeva_boreas"
+    TYPE="aevaii_boreas"
 elif [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == route* ]]; then
     TYPE="aeva_hq"
     export VTRRDATA=${AEVAHQ}

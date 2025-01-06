@@ -24,6 +24,9 @@ ENV VTRSRC=${VTRROOT}/external/vtr3 \
   VTRDATA=${VTRROOT}/data \
   VTRRESULT=${VTRROOT}/results
 
+RUN echo "alias build_ui='npm --prefix ${VTRUI} install ${VTRUI}; npm --prefix ${VTRUI} run build'" >> ~/.bashrc
+RUN echo "alias build_vtr='source /opt/ros/humble/setup.bash; cd ${VTRSRC}/main; colcon build --symlink-install'" >> ~/.bashrc
+
 ## Switch to root to install dependencies
 USER 0:0
 
@@ -37,7 +40,9 @@ RUN apt update && apt install -q -y python3 python3-distutils python3-pip
 RUN apt update && apt install -q -y libeigen3-dev
 RUN apt update && apt install -q -y libsqlite3-dev sqlite3
 RUN apt install -q -y libc6-dbg gdb valgrind
-RUN apt update && apt-get install -y sshfs
+
+## Dependency for navtech radar
+RUN apt update && apt install -q -y apt libbotan-2-dev
 
 ## Install PROJ (8.2.0) (this is for graph_map_server in vtr_navigation)
 RUN apt update && apt install -q -y cmake libsqlite3-dev sqlite3 libtiff-dev libcurl4-openssl-dev
@@ -117,6 +122,16 @@ RUN rm libtorch.zip
 ENV TORCH_LIB=/opt/torch/libtorch
 ENV LD_LIBRARY_PATH=$TORCH_LIB/lib:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ENV CMAKE_PREFIX_PATH=$TORCH_LIB:$CMAKE_PREFIX_PATH
+
+RUN apt install swig liblapack-dev libmetis-dev -y -q --install-recommends
+RUN mkdir -p ${HOMEDIR}/.casadi && cd ${HOMEDIR}/.casadi \
+  && git clone https://github.com/utiasASRL/casadi.git .
+RUN cd ${HOMEDIR}/.casadi \
+  && mkdir -p build && cd build \
+  && cmake build -DWITH_PYTHON=ON -DWITH_PYTHON3=ON -DWITH_IPOPT=ON -DWITH_BUILD_IPOPT=ON -DWITH_BUILD_REQUIRED=ON -DWITH_SELFCONTAINED=ON .. \
+  && make -j${NUMPROC} install
+ENV PYTHONPATH=${PYTHONPATH}:/usr/local
+ENV LD_LIBRARY_PATH=/usr/local/casadi:${LD_LIBRARY_PATH}
 
 # Install aws dependencies for boreas dataset installation
 RUN apt update && apt upgrade -q -y zip unzip
