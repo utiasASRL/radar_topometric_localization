@@ -43,6 +43,10 @@ GROUPSIZE=20
 SCRIPT="${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}.sh"
 EVAL_SCRIPT="${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}_eval.sh"
 
+# Save param file
+SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
+cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
+
 declare -A pids
 
 # Run tests in parallel
@@ -82,5 +86,5 @@ if [ "$1" = "odometry" ]; then
     done
 else
     echo "Executing command: bash $EVAL_SCRIPT $REFERENCE"
-    bash $EVAL_SCRIPT $REFERENCE
+    bash $EVAL_SCRIPT $REFERENCE --velocity
 fi

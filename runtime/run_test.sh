@@ -16,6 +16,10 @@ mkdir -p ${VTRRRESULT}
 # Load in param file based on sensor
 PARAM_FILE=${ROOTDIR}/runtime/config/${SENSOR}_config.yaml
 
+# Save param file
+SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
+cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
+
 # Call corresponding script from vtr_testing_radar
 if [ "$1" = "odometry" ]; then
     bash ${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_odometry.sh ${ODO_INPUT} ${PARAM_FILE}

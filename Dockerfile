@@ -36,6 +36,10 @@ RUN apt update && apt install -q -y freeglut3-dev
 RUN apt update && apt install -q -y python3 python3-distutils python3-pip
 RUN apt update && apt install -q -y libeigen3-dev
 RUN apt update && apt install -q -y libsqlite3-dev sqlite3
+RUN apt install -q -y libc6-dbg gdb valgrind
+
+## Dependency for navtech radar
+RUN apt update && apt install -q -y apt libbotan-2-dev
 
 ## Install PROJ (8.2.0) (this is for graph_map_server in vtr_navigation)
 RUN apt update && apt install -q -y cmake libsqlite3-dev sqlite3 libtiff-dev libcurl4-openssl-dev
@@ -61,7 +65,9 @@ RUN apt update && apt install -q -y \
   ros-humble-xacro \
   ros-humble-vision-opencv \
   ros-humble-perception-pcl ros-humble-pcl-ros \
-  ros-humble-foxglove-bridge
+  ros-humble-rmw-cyclonedds-cpp
+
+RUN apt install ros-humble-tf2-tools
 
 ## Install misc dependencies
 RUN apt update && apt install -q -y \
@@ -90,16 +96,43 @@ RUN pip3 install \
   python-socketio[client] \
   websocket-client
 
+RUN mkdir -p ${HOMEDIR}/.matplotcpp && cd ${HOMEDIR}/.matplotcpp \
+  && git clone https://github.com/lava/matplotlib-cpp.git . \
+  && mkdir -p ${HOMEDIR}/.matplotcpp/build && cd ${HOMEDIR}/.matplotcpp/build \
+  && cmake .. && cmake --build . -j${NUMPROC} --target install
+
 RUN apt install htop
+RUN apt install ros-humble-velodyne -q -y
 
 # Install vim
 RUN apt update && apt install -q -y vim
+
+#Install debugger
+RUN apt install -q -y libc6-dbg gdb valgrind
 
 # Install aws dependencies for boreas dataset installation
 RUN apt update && apt upgrade -q -y zip unzip
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
   unzip awscliv2.zip && \
   ./aws/install
+
+##Install LibTorch
+RUN curl https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.0.1%2Bcpu.zip --output libtorch.zip
+RUN unzip libtorch.zip -d /opt/torch
+RUN rm libtorch.zip
+ENV TORCH_LIB=/opt/torch/libtorch
+ENV LD_LIBRARY_PATH=$TORCH_LIB/lib:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+ENV CMAKE_PREFIX_PATH=$TORCH_LIB:$CMAKE_PREFIX_PATH
+
+RUN apt install swig liblapack-dev libmetis-dev -y -q --install-recommends
+RUN mkdir -p ${HOMEDIR}/.casadi && cd ${HOMEDIR}/.casadi \
+  && git clone https://github.com/utiasASRL/casadi.git .
+RUN cd ${HOMEDIR}/.casadi \
+  && mkdir -p build && cd build \
+  && cmake build -DWITH_PYTHON=ON -DWITH_PYTHON3=ON -DWITH_IPOPT=ON -DWITH_BUILD_IPOPT=ON -DWITH_BUILD_REQUIRED=ON -DWITH_SELFCONTAINED=ON .. \
+  && make -j${NUMPROC} install
+ENV PYTHONPATH=${PYTHONPATH}:/usr/local
+ENV LD_LIBRARY_PATH=/usr/local/casadi:${LD_LIBRARY_PATH}
 
 ## Switch to specified user
 USER ${USERID}:${GROUPID}
