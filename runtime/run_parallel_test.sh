@@ -43,20 +43,22 @@ GROUPSIZE=20
 SCRIPT="${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}.sh"
 EVAL_SCRIPT="${VTRRROOT}/src/vtr_testing_${SENSOR}/script/test_${MODE}_eval.sh"
 
-# Save param file
-SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
-cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
-
 declare -A pids
 
 # Run tests in parallel
 for seq in ${SEQUENCES[@]}; do
+    # Load in param file based on sensor    
+    PARAM_FILE=${ROOTDIR}/external/vtr_testing_radar/src/vtr_testing_radar/config/boreas.yaml
+    # Save param file
+    SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
+    cp ${PARAM_FILE} ${VTRRRESULT}/${seq}/${SAVE_CONFIG}
+
     if [ "$1" = "odometry" ]; then
-        echo "Executing command: bash $SCRIPT $seq &>/dev/null &"
+        echo "Executing command: bash $SCRIPT $seq $PARAM_FILE &>/dev/null &"
         ### command to execute
         bash $SCRIPT $seq &>/dev/null &
     else
-        echo "Executing command: bash $SCRIPT $REFERENCE $seq &>/dev/null &"
+        echo "Executing command: bash $SCRIPT $REFERENCE $seq $PARAM_FILE &>/dev/null &"
         ### command to execute
         bash $SCRIPT $REFERENCE $seq &>/dev/null &
     fi
