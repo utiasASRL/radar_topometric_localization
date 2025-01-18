@@ -79,7 +79,7 @@
       save_raw_point_cloud: false
       save_radar_images: false
 
-      preprocessing:
+    preprocessing:
       conversion:
         type: radar.offline_converter
         cart_resolution: 0.2384 # m/pixel of BEV Cartesian radar image
