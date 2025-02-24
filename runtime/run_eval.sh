@@ -13,15 +13,9 @@ TYPE=$4         # For aeva only
 export VTRRRESULT=${VTRRESULT}/${SENSOR}
 
 # Check if SENSOR is "aeva" and ODO_INPUT starts with "boreas-" or "route-"
-if [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == boreas-* ]]; then
-    TYPE="aeva_boreas"
-    export VTRRDATA=${BOREAS}
-elif [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == 20* ]]; then
+if [ "$SENSOR" = "aeva" ]; then
     echo "AEVA II"
     TYPE="aevaii_boreas"
-elif [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == route* ]]; then
-    TYPE="aeva_hq"
-    export VTRRDATA=${AEVAHQ}
 fi
 
 # Call corresponding script from vtr_testing_radar

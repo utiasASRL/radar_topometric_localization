@@ -17,11 +17,7 @@ mkdir -p ${VTRRRESULT}
 PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/boreas.yaml
 
 # Check if SENSOR is "aeva" and ODO_INPUT starts with "boreas-" or "route-"
-if [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == boreas-* ]]; then
-    PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/aeva_boreas.yaml
-    TYPE="aeva_boreas"
-    export VTRRDATA=${BOREAS}
-elif  [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == 20* ]]; then
+if [ "$SENSOR" = "aeva" ]; then
     echo "AEVA II"
     PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/aeva_boreas.yaml
     TYPE="aeva_boreas"
