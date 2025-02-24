@@ -70,7 +70,8 @@ RUN apt update && apt install -q -y \
   ros-humble-perception-pcl ros-humble-pcl-ros \
   ros-humble-rmw-cyclonedds-cpp \
   ros-humble-foxglove-bridge \
-  ros-humble-rosbag2 
+  ros-humble-rosbag2 \
+  ros-humble-fastcdr
 
 RUN apt install ros-humble-tf2-tools
 

@@ -8,6 +8,8 @@ pip install -e .
 pip install pyyaml
 pip install pandas
 pip install catkin_pkg
+pip install empy
+pip install lark
 
 deactivate
 

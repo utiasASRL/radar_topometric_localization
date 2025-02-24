@@ -2,11 +2,9 @@
 # Set variables
 export VTRROOT=${ROOTDIR}                                   # This is required for some internal scripts
 export VTRSRC=${ROOTDIR}/external/vtr3
-export VTRRROOT=${ROOTDIR}/external/vtr_testing_radar
+export VTRRROOT=${ROOTDIR}/external/boreas_vtr_wrapper
 export VTRRESULT=${ROOTDIR}/results                         # POINT THIS TO WHERE YOU WANT TO STORE RESULTS
-export VTRRDATA=/home/asrl-katya/mnt_vols/1n1p1/Data/update_test      # aevaii boreas data
-export BOREAS=/home/asrl-katya/mnt_vols/1n1p1/Data/boreas   # aevai boreas data
-export AEVAHQ=/home/asrl-katya/mnt_vols/1n1p1/Data/aevahq   # aevaii HQ data
+export VTRRDATA=/home/katya/Documents/Data/aevaii # aevaii boreas data
 
 # Source setups
 source /opt/ros/humble/setup.bash

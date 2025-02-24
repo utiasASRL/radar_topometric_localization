@@ -3,11 +3,10 @@
 	url = https://github.com/utiasASRL/vtr3.git
 	branch = aeva
 	commit = 930e504
-[submodule "vtr_testing_radar"]
-	path = external/vtr_testing_radar
-	url = https://github.com/cheneyuwu/vtr_testing_radar.git
+[submodule "boreas_vtr_wrapper"]
+	path = external/boreas_vtr_wrapper
+	url = https://github.com/utiasASRL/boreas_vtr_wrapper.git
 	branch = aeva
-	commit = 308d4e1
 [submodule "pyboreas"]
 	path = external/pyboreas
 	url = https://github.com/utiasASRL/pyboreas.git

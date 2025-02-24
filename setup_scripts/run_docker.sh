@@ -9,7 +9,6 @@ else
 	docker run -it --rm --name radar_loc_$(whoami) \
 	--privileged \
 	--network=host \
-	--gpus all \
 	-e DISPLAY=$DISPLAY \
 	-e ROOTDIR=$ROOTDIR \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \

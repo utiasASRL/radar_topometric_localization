@@ -21,14 +21,10 @@ if [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == boreas-* ]]; then
     PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/aeva_boreas.yaml
     TYPE="aeva_boreas"
     export VTRRDATA=${BOREAS}
-elif  [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == 2024-* ]]; then
+elif  [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == 20* ]]; then
     echo "AEVA II"
     PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/aeva_boreas.yaml
     TYPE="aeva_boreas"
-elif [ "$SENSOR" = "aeva" ] && [[ "$ODO_INPUT" == route* ]]; then
-    PARAM_FILE=${VTRRROOT}/src/vtr_testing_${SENSOR}/config/aeva_hq.yaml
-    TYPE="aeva_hq"
-    export VTRRDATA=${AEVAHQ}
 fi
 
 echo "PARAM FILE IS ${PARAM_FILE}"

@@ -53,7 +53,7 @@ for seq in ${SEQUENCES[@]}; do
     else
         echo "Executing command: bash $SCRIPT $REFERENCE $seq &>/dev/null &"
         ### command to execute
-        bash $SCRIPT $REFERENCE $seq &>/dev/null &
+        bash $SCRIPT $REFERENCE $seq ${TYPE} &>/dev/null &
     fi
 
     pids[${seq}]=$!
@@ -80,6 +80,6 @@ if [ "$1" = "odometry" ]; then
     bash $EVAL_SCRIPT $seq
     done
 else
-    echo "Executing command: bash $EVAL_SCRIPT $REFERENCE"
+    echo "Executing command: bash $EVAL_SCRIPT $REFERENCE $TYPE"
     bash $EVAL_SCRIPT $REFERENCE
 fi
