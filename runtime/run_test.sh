@@ -27,6 +27,7 @@ echo "PARAM FILE IS ${PARAM_FILE}"
 
 # Save param file
 SAVE_CONFIG=${SENSOR}_${MODE}_config.yaml
+mkdir -p ${VTRRRESULT}/${ODO_INPUT}
 cp ${PARAM_FILE} ${VTRRRESULT}/${ODO_INPUT}/${SAVE_CONFIG}
 
 # Call corresponding script from vtr_testing_radar
